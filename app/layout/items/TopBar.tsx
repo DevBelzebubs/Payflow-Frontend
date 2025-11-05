@@ -5,11 +5,7 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-const TopBar:React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMenuOpen })=> {
-  const [toggleLogin,setToggleLogin] = useState(false);
-  const ToggleLogin = () =>{
-    setToggleLogin(prev => !prev);
-  }
+const TopBar:React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMenuOpen, openLogin,setOpenLogin,openRegister,setOpenRegister })=> {
   return (
     <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -51,11 +47,13 @@ const TopBar:React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMen
               <Button
                 variant="outline"
                 className="border-orange-500 text-orange-600 hover:bg-orange-50"
-                onClick={() => ToggleLogin}
+                onClick={() => setOpenLogin(openLogin)}
               >
                 Iniciar Sesión
               </Button>
-              <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                      onClick={() => setOpenRegister(openRegister)}
+              >
                 Comenzar Gratis
               </Button>
             </div>
@@ -100,10 +98,13 @@ const TopBar:React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMen
               <Button
                 variant="outline"
                 className="w-full border-orange-500 text-orange-600"
+                onClick={() => setOpenLogin(openLogin)}
               >
                 Iniciar Sesión
               </Button>
-              <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600">
+              <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600"
+              onClick={() => setOpenRegister(openRegister)}
+              >
                 Comenzar Gratis
               </Button>
             </div>
