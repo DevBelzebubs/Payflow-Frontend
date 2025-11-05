@@ -1,6 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
-const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogin }) =>{
+import { useAuth } from '@/hooks/auth/useAuth';
+const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogin }) => {
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const { register, loading } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await register(nombre, email, password, telefono);
+      onClose();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,7 +66,7 @@ const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogi
               </button>
             </div>
 
-            <form className="px-6 py-6 grid gap-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="px-6 py-6 grid gap-4" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="reg-name"
@@ -63,6 +82,8 @@ const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogi
                   placeholder="Tu nombre"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
                 />
               </div>
 
@@ -81,6 +102,8 @@ const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogi
                   placeholder="correo@ejemplo.com"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -100,6 +123,8 @@ const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogi
                   placeholder="+51 9 1234 5678"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
                 />
               </div>
 
@@ -118,8 +143,14 @@ const Register:React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogi
                   placeholder="Crea una contraseña segura"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+
+              {error && (
+                <p className="text-sm text-red-600 text-center">{error}</p>
+              )}
 
               <button
                 type="submit"

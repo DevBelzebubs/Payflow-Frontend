@@ -1,6 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from '@/hooks/auth/useAuth';
 const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
+  const [email,setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const { login, loading } = useAuth();
+
+  const handleSubmit = async (e:React.FormEvent) =>{
+    e.preventDefault();
+    setError(null);
+    try{
+      await login(email,password);
+      onClose();
+    }catch(err:any){
+      setError(err.message || 'Error al iniciar sesión')
+    }
+  }
   return (
     <AnimatePresence>
       {isOpen && (
@@ -47,7 +64,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
               </button>
             </div>
 
-            <form className="px-6 py-6" onSubmit={(e) => e.preventDefault()}>
+            <form className="px-6 py-6" onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
                   htmlFor="login-email"
@@ -63,6 +80,8 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                   placeholder="Ingresa tu correo"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -81,6 +100,8 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                   placeholder="Ingresa tu contraseña"
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
 
@@ -100,12 +121,14 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                   ¿Olvidaste la contraseña?
                 </a>
               </div>
-
+              {error && (
+                <p className="text-sm text-red-600 text-center mb-4">{error}</p>
+              )}
               <button
                 type="submit"
                 className="w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
               >
-                Entrar
+                {loading ? 'Cargando...' : 'Entrar'}
               </button>
             </form>
 
