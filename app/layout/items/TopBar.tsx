@@ -11,8 +11,8 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white/90 backdrop-blur-lg shadow-lg'
-          : 'bg-transparent'
+        ? 'bg-white/90 backdrop-blur-lg shadow-lg'
+        : 'bg-transparent'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

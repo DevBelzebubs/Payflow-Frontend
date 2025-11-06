@@ -52,7 +52,7 @@ const Page = () => {
   }
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-orange-50">
-      <TopBar isScrolled={isScrolled} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={() => setIsScrolled} openLogin={showLogin} 
+      <TopBar isScrolled={isScrolled} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={() => setMobileMenuOpen(!mobileMenuOpen)} openLogin={showLogin} 
       setOpenLogin={toggleLogin} openRegister={showRegister} setOpenRegister={toggleRegister}></TopBar>
       <Balance></Balance>
       <Stats></Stats>

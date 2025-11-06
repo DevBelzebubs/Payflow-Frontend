@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setToken(newToken);
             setUser(loggedUser);
             localStorage.setItem('token', newToken);
-            localStorage.setItem('user', loggedUser);
+            localStorage.setItem('user', JSON.stringify(loggedUser));
             api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
         } catch (error) {
             console.error('Error de login:', error);
