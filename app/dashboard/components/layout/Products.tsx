@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Producto } from "@/interfaces/services/Products";
 import { AlertCircle, Loader2, Package } from "lucide-react";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 
-const Productos = () =>{
+const Productos = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,8 +25,8 @@ const Productos = () =>{
       }
     };
     cargarProductos()
-    },[]);
-    if (isLoading) {
+  }, []);
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
@@ -55,20 +56,37 @@ const Productos = () =>{
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {productos.map((producto) => (
-            <Card key={producto.id} className="flex flex-col justify-between hover:shadow-lg transition-shadow">
+            <Card
+              key={producto.id}
+              className="flex flex-col justify-between hover:shadow-lg transition-shadow"
+            >
+              <div className="w-full h-48 bg-gray-100 flex items-center justify-center overflow-hidden rounded-t-lg">
+                {producto.imagen_url ? (
+                  <Image
+                    src={producto.imagen_url}
+                    width={500}
+                    height={300}
+                    alt={producto.nombre}
+                    className="object-cover w-full h-full"/>
+                ) : (
+                  <div className="text-gray-400 text-sm">Sin imagen</div>
+                )}
+              </div>
+
               <CardHeader>
                 <CardTitle className="text-xl">{producto.nombre}</CardTitle>
               </CardHeader>
-              <CardContent>
+
+              <CardContent className="flex flex-col flex-grow">
                 <p className="text-gray-600 mb-2 h-16 overflow-y-auto">
-                  {producto.descripcion || 'Producto sin descripción.'}
+                  {producto.descripcion || "Producto sin descripción."}
                 </p>
                 <p className="text-sm text-green-600 font-medium mb-4">
                   {producto.stock} en stock
                 </p>
+
                 <div className="text-right mt-auto">
                   <p className="text-xs text-gray-500">Precio</p>
-                   {/* Usamos 'precio' como en la interfaz */}
                   <p className="text-2xl font-bold text-gray-900 mb-4">
                     ${producto.precio.toFixed(2)}
                   </p>

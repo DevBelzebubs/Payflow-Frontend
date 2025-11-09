@@ -6,4 +6,5 @@ export interface Producto {
   stock: number;
   categoria: string | null;
   activo: boolean;
+  imagen_url?: string | null;
 }

@@ -15,8 +15,8 @@ import {
 } from 'lucide-react';
 const navItems = [
   { href: '/dashboard', label: 'Inicio', icon: Home },
-  { href: '/dashboard/servicios', label: 'Servicios', icon: LayoutGrid },
-  { href: '/dashboard/productos', label: 'Productos', icon: Package },
+  { href: '/dashboard/services', label: 'Servicios', icon: LayoutGrid },
+  { href: '/dashboard/products', label: 'Productos', icon: Package },
   { href: '/dashboard/historial', label: 'Historial', icon: History },
   { href: '/dashboard/configuracion', label: 'Configuración', icon: Settings },
 ]

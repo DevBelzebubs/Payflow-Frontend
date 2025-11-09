@@ -12,7 +12,7 @@ export const getServicios = async ():Promise<Servicio[]> =>{
 }
 export const getProductos = async ():Promise<Producto[]> =>{
     try {
-    const response = await api.get<Producto[]>('/api/productos');
+    const response = await api.get<Producto[]>('/productos');
     return response.data;
   } catch (error) {
     console.error('Error al obtener productos:', error);

@@ -3,11 +3,13 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from '@/api/axiosConfig';
 import { useRouter } from "next/navigation";
 import { User } from "@/interfaces/User";
+import { AuthContextType } from "@/lib/props/Auth/Contexts/AuthContextType";
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const router = useRouter()
     
     useEffect(() => {
@@ -19,6 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setUser(parsedUser);
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
+        setLoading(false);
     }, [])
     const login = async (email: string, pass: string) => {
         setLoading(true);
@@ -41,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setLoading(false);
         }
     }
-    const register = async (nombre: string, email: string, pass: string, telefono: string) => {
+    const register = async (nombre: string, email: string, pass: string, telefono: string, dni: string) => {
         setLoading(true);
         try {
             const response = await api.post('/auth/register', {
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 email: email,
                 password: pass,
                 telefono: telefono,
+                dni: dni
             });
             const {token: newToken, user: registeredUser} = response.data;
             setToken(newToken);

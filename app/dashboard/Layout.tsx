@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react'
 import { useAuth } from '@/hooks/auth/useAuth';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Sidebar from './components/layout/Sidebar';
 
 const Page = ({children,}:{children: React.ReactNode}) => {

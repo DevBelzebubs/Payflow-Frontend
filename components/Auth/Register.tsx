@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '@/hooks/auth/useAuth';
 const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [nombre, setNombre] = useState('');
+  const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [telefono, setTelefono] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +15,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
     e.preventDefault();
     setError(null);
     try {
-      await register(nombre, email, password, telefono);
+      await register(nombre, email, password, telefono, dni);
       onClose();
     } catch (err: any) {
       setError(err.message);
@@ -86,7 +87,26 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   onChange={(e) => setNombre(e.target.value)}
                 />
               </div>
-
+              <div>
+                <label
+                  htmlFor="reg-dni"
+                  className="mb-2 block text-sm font-medium text-gray-700"
+                >
+                  DNI
+                </label>
+                <input
+                  id="reg-dni"
+                  name="dni"
+                  type="text"
+                  autoComplete="off"
+                  placeholder="Tu número de DNI"
+                  maxLength={8}
+                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  required
+                  value={dni}
+                  onChange={(e) => setDni(e.target.value)}
+                />
+              </div>
               <div>
                 <label
                   htmlFor="reg-email"
@@ -127,7 +147,6 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   onChange={(e) => setTelefono(e.target.value)}
                 />
               </div>
-
               <div>
                 <label
                   htmlFor="reg-password"
@@ -147,16 +166,15 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-
               {error && (
                 <p className="text-sm text-red-600 text-center">{error}</p>
               )}
-
               <button
                 type="submit"
-                className="mt-1 w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                disabled={loading}
+                className="mt-1 w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:opacity-70"
               >
-                Registrarme
+                {loading ? 'Registrando...' : 'Registrarme'}
               </button>
             </form>
 
