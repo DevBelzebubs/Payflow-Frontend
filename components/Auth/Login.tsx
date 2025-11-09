@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '@/hooks/auth/useAuth';
+import { useRouter } from 'next/navigation';
 const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [email,setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const { login, loading } = useAuth();
-
   const handleSubmit = async (e:React.FormEvent) =>{
     e.preventDefault();
     setError(null);

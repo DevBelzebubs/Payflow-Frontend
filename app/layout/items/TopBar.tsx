@@ -39,12 +39,6 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
             >
               Cómo Funciona
             </a>
-            <a
-              href="#testimonials"
-              className="text-gray-700 hover:text-orange-600 transition-colors font-medium"
-            >
-              Testimonios
-            </a>
             {isAuthenticated ? (
               <>
                 <span className="text-gray-700 font-medium">

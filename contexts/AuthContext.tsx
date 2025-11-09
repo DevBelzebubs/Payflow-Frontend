@@ -1,12 +1,14 @@
 'use client'
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from '@/api/axiosConfig';
+import { useRouter } from "next/navigation";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
+    const router = useRouter()
+    
     useEffect(() => {
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
@@ -30,6 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('token', newToken);
             localStorage.setItem('user', JSON.stringify(loggedUser));
             api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            router.replace('/dashboard')
         } catch (error) {
             console.error('Error de login:', error);
             throw new Error('Email o contraseña incorrectos.');
@@ -54,6 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('user', JSON.stringify(registeredUser));
 
             api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            router.replace('/dashboard')
 
         } catch (error: any) {
             console.error('Error de registro:', error);
@@ -69,6 +73,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         delete api.defaults.headers.common['Authorization'];
+        router.replace('/');
+
     };
     const isAuthenticated = !!token;
     return (
