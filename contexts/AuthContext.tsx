@@ -2,6 +2,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { api } from '@/api/axiosConfig';
 import { useRouter } from "next/navigation";
+import { User } from "@/interfaces/User";
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
