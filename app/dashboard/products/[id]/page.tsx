@@ -5,105 +5,13 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { getProductoById } from '@/api/services/CatalogService';
 import { Producto } from '@/interfaces/services/Products';
-
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Loader2, AlertCircle, ShoppingCart, Package, ArrowLeft,
-  ChevronDown, ChevronUp, CheckCircle2, Star, MessageCircle
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { ImagenProducto } from '@/interfaces/Review/ImagenProducto';
 import useCart from '@/hooks/cart/useCart';
-
-const ProductGallery = ({ principal, imagenes }: { principal?: string | null, imagenes?: ImagenProducto[] }) => {
-  
-  const allImages = [...(principal ? [{ id: 'main', url_imagen: principal, orden: -1 }] : []), ...(imagenes || []).filter(img => img.url_imagen !== principal)
-  ].sort((a, b) => a.orden - b.orden);
-
-  const [selectedImage, setSelectedImage] = useState(allImages[0]?.url_imagen || null);
-
-  useEffect(() => {
-    setSelectedImage(allImages[0]?.url_imagen || null);
-  }, [principal, imagenes]);
-
-  if (allImages.length === 0) {
-    return (
-      <div className="w-full min-h-[450px] bg-gray-100 flex items-center justify-center rounded-lg">
-        <Package className="w-24 h-24 text-gray-300" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      {/* 4. Imagen Principal Seleccionada */}
-      <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden border">
-        <img
-          src={selectedImage || ''}
-          alt="Vista principal del producto"
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        />
-      </div>
-      
-      {/* 5. Iterador de Thumbnails (solo si hay más de 1 imagen) */}
-      {allImages.length > 1 && (
-        <div className="flex gap-2">
-          {allImages.map((img) => (
-            <button
-              key={img.id}
-              onClick={() => setSelectedImage(img.url_imagen)}
-              className={cn(
-                "w-16 h-16 rounded-md overflow-hidden border-2 transition-all duration-200",
-                // Resalta el thumbnail seleccionado
-                selectedImage === img.url_imagen 
-                  ? "border-orange-500 opacity-100" 
-                  : "border-gray-200 opacity-60 hover:opacity-100 hover:border-gray-400"
-              )}
-            >
-              <img src={img.url_imagen} alt="Vista miniatura" className="w-full h-full object-cover" />
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-const StarRating = ({ rating, totalReviews, showTotal = true }: { rating: number, totalReviews: number, showTotal?: boolean }) => {
-  const fullStars = Math.floor(rating);
-  const emptyStars = 5 - fullStars;
-
-  return (
-    <div className="flex items-center gap-2 mb-4">
-      <div className="flex text-yellow-400">
-        {[...Array(fullStars)].map((_, i) => <Star key={`full-${i}`} className="w-5 h-5 fill-current" />)}
-        {[...Array(emptyStars)].map((_, i) => <Star key={`empty-${i}`} className="w-5 h-5 text-gray-300 fill-current" />)}
-      </div>
-      {showTotal && (
-        <span className="text-sm text-gray-500">({totalReviews} reseñas)</span>
-      )}
-    </div>
-  );
-};
-
-const QuantitySelector = ({ stock, quantity, setQuantity }: { stock: number, quantity: number, setQuantity: (q: number) => void }) => {
-  const handleSet = (newQuantity: number) => {
-    const boundedQuantity = Math.max(1, Math.min(newQuantity, stock));
-    setQuantity(boundedQuantity);
-  };
-
-  return (
-    <div className="flex items-center border rounded-lg">
-      <Button variant="ghost" size="icon" className="h-full rounded-r-none" onClick={() => handleSet(quantity - 1)} disabled={stock === 0 || quantity <= 1}>
-        <ChevronDown className="w-5 h-5" />
-      </Button>
-      <span className="w-14 text-center text-lg font-medium">{quantity}</span>
-      <Button variant="ghost" size="icon" className="h-full rounded-l-none" onClick={() => handleSet(quantity + 1)} disabled={stock === 0 || quantity >= stock}>
-        <ChevronUp className="w-5 h-5" />
-      </Button>
-    </div>
-  );
-};
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2, AlertCircle, ShoppingCart, ArrowLeft,CheckCircle2, MessageCircle} from 'lucide-react';
+import { ProductGallery } from './ProductGallery';
+import { StarRating } from './StarRating';
+import { QuantitySelector } from './QuantitySelector';
 
 const ProductDetailPage = () => {
   const params = useParams();
@@ -132,7 +40,6 @@ const ProductDetailPage = () => {
       fetchProduct();
     }
   }, [id]);
-
   const handleAddToCart = () => {
     if (!producto || quantity === 0) return;
     addToCart(producto, quantity);
@@ -201,7 +108,6 @@ const ProductDetailPage = () => {
               <CheckCircle2 className="w-5 h-5 mr-2" />{producto.stock} disponibles
             </span>
           )}
-          
           <div className="flex items-stretch gap-4 mb-4">
             <QuantitySelector stock={producto.stock || 0} quantity={quantity} setQuantity={setQuantity} />
             <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-lg py-6" onClick={handleAddToCart} disabled={isOutOfStock}>
@@ -211,7 +117,6 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
-
       <div className="mt-12 lg:mt-16">
         <Card>
           <CardHeader>
@@ -232,7 +137,6 @@ const ProductDetailPage = () => {
                 </ul>
               </div>
             )}
-            
             <div className="py-6">
               <h3 className="text-lg font-semibold mb-4">Reseñas de Clientes ({producto.total_reseñas || 0})</h3>
               {(!producto.reseñas || producto.reseñas.length === 0) ? (
