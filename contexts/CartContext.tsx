@@ -25,28 +25,30 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             localStorage.removeItem('payflow_cart')
         }
     }, [cart])
-    const addToCart = (item: Producto) => {
+    const addToCart = (item: Producto,quantity: number) => {
         setCart((prevCart) => {
             const existingItem = prevCart.find((ci) => ci.id === item.id);
 
             if (existingItem) {
                 return prevCart.map((ci) =>
                     ci.id === item.id
-                        ? { ...ci, quantity: ci.quantity + 1 }
+                        ? { ...ci, quantity: ci.quantity + quantity }
                         : ci
                 );
             } else {
-                return [...prevCart, { ...item, quantity: 1 }];
+                return [...prevCart, { ...item, quantity }];
             }
         });
     };
     const removeFromCart = (itemId: string) => {
-        setCart((prevCart) => prevCart.filter((ci) => ci.id !== itemId));
-    };
-    const clearCart = () => {
-        setCart([]);
-    };
-    const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    setCart((prevCart) => prevCart.filter((ci) => ci.id !== itemId));
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
+
+  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
     return (
         <CartContext.Provider
             value={{

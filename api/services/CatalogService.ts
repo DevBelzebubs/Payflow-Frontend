@@ -19,3 +19,12 @@ export const getProductos = async ():Promise<Producto[]> =>{
     throw new Error('No se pudo cargar el catálogo de productos.');
   }
 }
+export const getProductoById = async (id: string): Promise<Producto> => {
+  try {
+    const response = await api.get<Producto>(`/productos/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error al obtener el producto ${id}:`, error);
+    throw new Error('No se pudo cargar el producto.');
+  }
+};
