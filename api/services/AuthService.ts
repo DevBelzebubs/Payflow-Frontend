@@ -8,20 +8,29 @@ interface AuthResponse {
 }
 const login = async (email: string, pass: string): Promise<AuthResponse> => {
   try {
-    const response = await api.post<AuthResponse>('/auth/login', {
+    const response = await api.post<AuthResponse>("/auth/login", {
       email: email,
       password: pass,
     });
     return response.data;
   } catch (error: any) {
-    console.error('Error en el servicio de login:', error.response?.data?.error || error.message);
-    throw new Error(error.response?.data?.error || 'Error al iniciar sesión');
+    console.error(
+      "Error en el servicio de login:",
+      error.response?.data?.error || error.message
+    );
+    throw new Error(error.response?.data?.error || "Error al iniciar sesión");
   }
 };
 
-const register = async (nombre: string, email: string, pass: string, telefono: string, dni: string): Promise<AuthResponse> => {
+const register = async (
+  nombre: string,
+  email: string,
+  pass: string,
+  telefono: string,
+  dni: string
+): Promise<AuthResponse> => {
   try {
-    const response = await api.post<AuthResponse>('/auth/register', {
+    const response = await api.post<AuthResponse>("/auth/register", {
       nombre: nombre,
       email: email,
       password: pass,
@@ -30,8 +39,11 @@ const register = async (nombre: string, email: string, pass: string, telefono: s
     });
     return response.data;
   } catch (error: any) {
-    console.error('Error en el servicio de registro:', error.response?.data?.error || error.message);
-    throw new Error(error.response?.data?.error || 'Error al registrarse');
+    console.error(
+      "Error en el servicio de registro:",
+      error.response?.data?.error || error.message
+    );
+    throw new Error(error.response?.data?.error || "Error al registrarse");
   }
 };
 
@@ -40,25 +52,46 @@ const getClienteByUsuarioId = async (usuarioId: string): Promise<Cliente> => {
     const response = await api.get<Cliente>(`/clientes/${usuarioId}`);
     return response.data;
   } catch (error: any) {
-    console.error('Error al obtener el cliente:', error.response?.data?.error || error.message);
-    throw new Error(error.response?.data?.error || 'No se pudo cargar el perfil del cliente');
+    console.error(
+      "Error al obtener el cliente:",
+      error.response?.data?.error || error.message
+    );
+    const errorMsg =
+      error.response?.data?.error || "No se pudo cargar el perfil del cliente";
+    throw new Error(errorMsg);
   }
 };
 
-const createCliente = async (usuario_id: string): Promise<Cliente> => {
+const createCliente = async (
+  usuario_id: string,
+  token: string
+): Promise<Cliente> => {
   try {
-    const response = await api.post<Cliente>('/clientes', {
-      usuario_id: usuario_id
-    });
+    const response = await api.post<Cliente>(
+      "/clientes",
+      {
+        usuario_id: usuario_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
-    console.error('Error al crear el cliente:', error.response?.data?.error || error.message);
-    throw new Error(error.response?.data?.error || 'No se pudo crear el perfil del cliente');
+    console.error(
+      "Error al crear el cliente:",
+      error.response?.data?.error || error.message
+    );
+    const errorMsg =
+      error.response?.data?.error || "No se pudo crear el perfil del cliente";
+    throw new Error(errorMsg);
   }
 };
 export const AuthService = {
   login,
   register,
   getClienteByUsuarioId,
-  createCliente
+  createCliente,
 };

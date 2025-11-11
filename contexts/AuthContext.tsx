@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem('user', JSON.stringify(registeredUser));
             api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
             try {
-                const nuevoCliente = await AuthService.createCliente(registeredUser.id);
+                const nuevoCliente = await AuthService.createCliente(registeredUser.id,newToken);
                 setCliente(nuevoCliente);
             } catch (createError) {
                 console.error("Usuario registrado, pero falló la creación del cliente:", createError);
