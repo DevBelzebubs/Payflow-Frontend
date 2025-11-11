@@ -17,19 +17,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter()
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
-        if (token && user) {
-            const parsedUser = JSON.parse(user);
-            setToken(token);
-            setUser(parsedUser);
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
+        const loadAuth = () => {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            if (token && user) {
+                const parsedUser = JSON.parse(user);
+                setToken(token);
+                setUser(parsedUser);
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                setIsAuthenticated(true);
+                syncUser(parsedUser.id);
+            }
+            setLoading(false);
+        };
+        loadAuth();
     }, []);
     const syncUser = async (userId: string) => {
         try {
+            const token = localStorage.getItem('token');
+            if (token && !api.defaults.headers.common['Authorization']) {
+                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            }
             const data = await AuthService.getClienteByUsuarioId(userId);
             setCliente(data);
 
@@ -38,28 +46,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setCliente(null);
         }
     };
-    useEffect(() => {
-        if (isAuthenticated && user) {
-            syncUser(user.id);
-        } else {
-            setCliente(null);
-        }
-    }, [isAuthenticated, user]);
     const login = async (email: string, pass: string) => {
         setLoading(true);
         try {
             const reponse = await AuthService.login(email, pass);
             const { token: newToken, user: loggedUser } = reponse;
+            
+            localStorage.setItem('token', newToken);
+            localStorage.setItem('user', JSON.stringify(loggedUser));
+            api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+
+            await syncUser(loggedUser.id);
+
             setToken(newToken);
             setUser(loggedUser);
             setIsAuthenticated(true);
 
-            localStorage.setItem('token', newToken);
-            localStorage.setItem('user', JSON.stringify(loggedUser));
-            api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            await syncUser(loggedUser.id);
             router.replace('/dashboard')
         } catch (error) {
             console.error('Error de login:', error);
+            setLoading(false);
             throw new Error('Email o contraseña incorrectos.');
         } finally {
             setLoading(false);
@@ -70,24 +77,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await AuthService.register(nombre, email, pass, telefono, dni);
             const { token: newToken, user: registeredUser } = response;
-            setToken(newToken);
-            setUser(registeredUser);
-            setIsAuthenticated(true);
 
             localStorage.setItem('token', newToken);
             localStorage.setItem('user', JSON.stringify(registeredUser));
             api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            setToken(newToken);
+            setUser(registeredUser);
+            setIsAuthenticated(true);
             try {
-                const nuevoCliente = await AuthService.createCliente(registeredUser.id,newToken);
+                const nuevoCliente = await AuthService.createCliente(registeredUser.id); 
                 setCliente(nuevoCliente);
             } catch (createError) {
                 console.error("Usuario registrado, pero falló la creación del cliente:", createError);
             }
+            
             router.replace('/dashboard')
 
         } catch (error: any) {
             console.error('Error de registro:', error);
             const errorMessage = error.response?.data?.error || 'Error al registrar la cuenta.';
+            setLoading(false);
             throw new Error(errorMessage);
         } finally {
             setLoading(false);

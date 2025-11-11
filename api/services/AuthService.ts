@@ -49,7 +49,7 @@ const register = async (
 
 const getClienteByUsuarioId = async (usuarioId: string): Promise<Cliente> => {
   try {
-    const response = await api.get<Cliente>(`/clientes/${usuarioId}`);
+    const response = await api.get<Cliente>(`/clientes/usuario/${usuarioId}`);
     return response.data;
   } catch (error: any) {
     console.error(
@@ -62,21 +62,14 @@ const getClienteByUsuarioId = async (usuarioId: string): Promise<Cliente> => {
   }
 };
 
-const createCliente = async (
-  usuario_id: string,
-  token: string
-): Promise<Cliente> => {
+const createCliente = async (usuario_id: string): Promise<Cliente> => {
   try {
     const response = await api.post<Cliente>(
       "/clientes",
       {
         usuario_id: usuario_id,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      {}
     );
     return response.data;
   } catch (error: any) {
