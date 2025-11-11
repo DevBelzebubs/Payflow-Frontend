@@ -1,9 +1,12 @@
 import { Servicio } from "@/interfaces/services/Service";
 import { api } from '@/api/axiosConfig';
 import { Producto } from "@/interfaces/services/Products";
-export const getServicios = async ():Promise<Servicio[]> =>{
+
+export const getServicios = async (clienteId:string):Promise<Servicio[]> =>{
     try {
-    const response = await api.get<Servicio[]>('/servicios');
+    const response = await api.get<Servicio[]>('/servicios',{
+      params:{ clienteId }
+    });
     return response.data;
   } catch (error) {
     console.error('Error al obtener servicios:', error);

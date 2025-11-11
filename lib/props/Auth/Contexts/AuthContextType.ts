@@ -1,7 +1,10 @@
+import { Cliente } from "@/interfaces/Cliente";
 import { User } from "@/interfaces/User";
 
 export interface AuthContextType {
   user: User | null;
+  cliente: Cliente | null;
+  setCliente: (cliente: Cliente | null) => void;
   token: string | null;
   isAuthenticated: boolean;
   loading: boolean;

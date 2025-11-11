@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Servicio } from "@/interfaces/services/Service";
 import {
   AlertCircle, Loader2, CreditCard, Package, Zap,
-  Film, Ticket, Star, CalendarDays,} from 'lucide-react';
+  Film, Ticket, Star, CalendarDays,
+} from 'lucide-react';
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import Link from "next/link";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const serviceTypeInfo = {
   'UTILIDAD': {
@@ -47,12 +49,22 @@ const Services = () => {
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { cliente, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const cargarServicios = async () => {
+      if (authLoading) {
+        return;
+      }
+      if (!cliente?.id) {
+        setIsLoading(false);
+        setError("No se pudo identificar al cliente. Por favor, inicie sesión de nuevo.");
+        return;
+      }
       try {
         setIsLoading(true);
-        const data = await getServicios();
+        const data = await getServicios(cliente.id);
+
         setServicios(data.filter(s => s.activo === true));
         setError(null);
       } catch (error) {
@@ -62,7 +74,7 @@ const Services = () => {
       }
     };
     cargarServicios();
-  }, []);
+  }, [cliente,authLoading]);
 
   if (isLoading) {
     return (
