@@ -226,10 +226,11 @@ const ServiceDetailPage = () => {
                 </div>
               </div>
             )}
-
-            <Button className="w-full bg-orange-500 hover:bg-orange-600 text-lg py-6" onClick={handlePayment}>
-              <CreditCard className="w-5 h-5 mr-3" />
-              Pagar Ahora
+            <Button asChild className="w-full bg-orange-500 hover:bg-orange-600 text-lg py-6">
+              <Link href={`/dashboard/payment/selection/${servicio.idServicio}`}>
+                <CreditCard className="w-5 h-5 mr-3" />
+                Pagar Ahora
+              </Link>
             </Button>
           </div>
         </div>

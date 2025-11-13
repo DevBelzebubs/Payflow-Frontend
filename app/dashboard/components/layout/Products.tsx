@@ -3,7 +3,7 @@ import { getProductos } from "@/api/services/CatalogService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Producto } from "@/interfaces/services/Products";
-import { AlertCircle, Loader2, Package, ShoppingCart } from "lucide-react";
+import { AlertCircle, Loader2, Package, Search, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import useCart from "@/hooks/cart/useCart";
@@ -13,6 +13,7 @@ const Productos = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("")
   const { addToCart } = useCart();
   useEffect(() => {
     const cargarProductos = async () => {
@@ -29,6 +30,8 @@ const Productos = () => {
     };
     cargarProductos()
   }, []);
+  const productosFiltrados = productos.filter((p) =>
+    p.nombre.toLowerCase().includes(search.toLowerCase()));
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -52,20 +55,31 @@ const Productos = () => {
       <h1 className="text-3xl font-bold text-gray-900 mb-8">
         Comprar Productos
       </h1>
-      {productos.length === 0 && !isLoading ? (
+      <div className="relative w-full md:w-72 mb-5">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <input
+          name="search"
+          type="text"
+          placeholder="Buscar Producto..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        />
+      </div>
+      {productosFiltrados.length === 0 && !isLoading ? (
         <p className="text-gray-500 text-center py-4">
           No hay productos disponibles para comprar en este momento.
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {productos.map((producto) => (
+          {productosFiltrados.map((producto) => (
             <Card key={producto.id} className="flex flex-col justify-between hover:shadow-lg transition-shadow">
               <Link href={`/dashboard/products/${producto.id}`} passHref>
                 <CardHeader className="p-0">
                   <div className="w-full h-48 rounded-t-lg bg-gray-100 flex items-center justify-center">
                     {producto.imagen_url ? (
                       <Image
-                        src={producto.imagen_url} 
+                        src={producto.imagen_url}
                         alt={producto.nombre}
                         width={120}
                         height={200}
@@ -81,28 +95,28 @@ const Productos = () => {
                     </CardTitle>
                   </div>
                 </CardHeader>
-              </Link>
-              <CardContent className="p-4 pt-0 flex flex-col flex-grow">
-                <p className="text-gray-600 mb-2 flex-grow min-h-[3.5rem]">
-                  {producto.descripcion || 'Producto sin descripción.'}
-                </p>
-                <p className="text-sm text-green-600 font-medium mb-2">
-                  {producto.stock} en stock
-                </p>
-                <div className="text-right mt-auto">
-                  <p className="text-xs text-gray-500">Precio</p>
-                  <p className="text-xl font-bold text-gray-900 mb-3">
-                    ${producto.precio.toFixed(2)}
+                <CardContent className="p-4 pt-0 flex flex-col flex-grow">
+                  <p className="text-gray-600 mb-2 flex-grow min-h-[3.5rem]">
+                    {producto.descripcion || 'Producto sin descripción.'}
                   </p>
-                  <Button
-                    className="w-full bg-orange-500 hover:bg-orange-600"
-                    onClick={() => addToCart(producto,1)}
-                  >
-                    Añadir al Carrito
-                    <ShoppingCart className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              </CardContent>
+                  <p className="text-sm text-green-600 font-medium mb-2">
+                    {producto.stock} en stock
+                  </p>
+                  <div className="text-right mt-auto">
+                    <p className="text-xs text-gray-500">Precio</p>
+                    <p className="text-xl font-bold text-gray-900 mb-3">
+                      ${producto.precio.toFixed(2)}
+                    </p>
+                    <Button
+                      className="w-full bg-orange-500 hover:bg-orange-600"
+                      onClick={() => addToCart(producto, 1)}
+                    >
+                      Añadir al Carrito
+                      <ShoppingCart className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Link>
             </Card>
           ))}
         </div>

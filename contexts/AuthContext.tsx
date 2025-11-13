@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { User } from "@/interfaces/User";
 import { Cliente } from "@/interfaces/Cliente";
 import { AuthService } from "@/api/services/AuthService";
-import { AuthContextType } from "@/lib/props/Auth/Contexts/AuthContextType";
+import { AuthContextType } from "@/lib/props/auth/Contexts/AuthContextType";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

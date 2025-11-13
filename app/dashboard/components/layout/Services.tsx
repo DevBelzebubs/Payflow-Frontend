@@ -6,8 +6,9 @@ import { Servicio } from "@/interfaces/services/Service";
 import {
   AlertCircle, Loader2, CreditCard, Package, Zap,
   Film, Ticket, Star, CalendarDays,
+  Search,
 } from 'lucide-react';
-import { useEffect, useState } from "react";
+import { InputHTMLAttributes, useEffect, useState } from "react";
 import Image from 'next/image';
 import Link from "next/link";
 import { useAuth } from "@/hooks/auth/useAuth";
@@ -49,6 +50,7 @@ const Services = () => {
   const [servicios, setServicios] = useState<Servicio[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const { cliente, loading: authLoading } = useAuth();
 
   useEffect(() => {
@@ -74,7 +76,10 @@ const Services = () => {
       }
     };
     cargarServicios();
-  }, [cliente,authLoading]);
+  }, [cliente, authLoading]);
+  const serviciosFiltrados = servicios.filter((s) =>
+    s.nombre.toLowerCase().includes(search.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -94,20 +99,30 @@ const Services = () => {
       </div>
     );
   }
-
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-900 mb-8">
         Pagar Servicios
       </h1>
-      {servicios.length === 0 && !isLoading ? (
+      <div className="relative w-full md:w-72 mb-5">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <input
+          name="search"
+          type="text"
+          placeholder="Buscar servicio..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        />
+      </div>
+
+      {serviciosFiltrados.length === 0 && !isLoading ? (
         <p className="text-gray-500 text-center py-4">
           No hay servicios disponibles para pagar en este momento.
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-          {servicios.map((servicio) => {
+          {serviciosFiltrados.map((servicio) => {
 
             const typeInfo = serviceTypeInfo[servicio.tipo_servicio] || serviceTypeInfo['OTRO'];
             const Icon = typeInfo.icon;
@@ -129,20 +144,16 @@ const Services = () => {
                       )}
                     </div>
                   </CardHeader>
-
                   <CardContent className="p-4 flex flex-col flex-grow">
-
                     <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${typeInfo.bgColor} ${typeInfo.color} mb-2 self-start`}>
                       <Icon className="w-3 h-3 mr-1.5" />
                       {typeInfo.label}
                     </div>
-
                     <CardTitle className="text-xl mb-2">{servicio.nombre}</CardTitle>
 
                     <p className="text-sm text-gray-600 mb-4 flex-grow min-h-[60px]">
                       {servicio.sinopsis || servicio.descripcion || 'Servicio sin descripción.'}
                     </p>
-
                     {servicio.fecha_evento && (
                       <div className="flex items-center text-sm text-gray-500 mb-1">
                         <CalendarDays className="w-4 h-4 mr-2" />

@@ -3,10 +3,17 @@ import useCart from '@/hooks/cart/useCart';
 import { Producto } from '@/interfaces/services/Products';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CreditCard, Package, ShoppingCart, Trash2, X } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useCallback } from 'react'
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     const { cart, removeFromCart, clearCart, itemCount } = useCart();
+    const router = useRouter();
+    const handleCheckout = () => {
+        onClose();
+        router.push('/dashboard/payment/selection/cart');
+    };
     const total = cart.reduce((acc, item) => {
         return acc + item.precio * item.quantity;
     }, 0);
@@ -56,7 +63,6 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
                                             ) : (
-                                                // REFACTOR: Solo hay fallback para producto
                                                 <Package className="w-6 h-6 text-gray-400" />
                                             )}
                                         </div>
@@ -95,7 +101,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                         <Trash2 className="w-4 h-4 mr-2" />
                                         Vaciar Carrito
                                     </Button>
-                                    <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                                    
+                                    <Button className="w-full bg-orange-500 hover:bg-orange-600" onClick={handleCheckout}>
                                         <CreditCard className="w-4 h-4 mr-2" />
                                         Proceder al Pago
                                     </Button>
