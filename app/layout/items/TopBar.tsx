@@ -6,8 +6,17 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/auth/useAuth';
+import { useRouter } from 'next/navigation';
 const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMenuOpen, openLogin, setOpenLogin, openRegister, setOpenRegister }) => {
+  const [openDashboard, setOpenDashboard] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const toggleDashboard = () => {
+    setOpenDashboard(prev => !prev);
+  }
+  const router = useRouter();
+  const goDashboard = () => {
+    router.push("/dashboard");
+  }
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
@@ -41,9 +50,13 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
             </a>
             {isAuthenticated ? (
               <>
-                <span className="text-gray-700 font-medium">
-                  Hola, {user?.nombre}
-                </span>
+                <Button
+                  variant="outline"
+                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                  onClick={goDashboard}
+                >
+                  Dashboard
+                </Button>
                 <Button
                   variant="outline"
                   className="border-gray-400 text-gray-600 hover:bg-gray-100"
@@ -110,9 +123,13 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
             </a>
             {isAuthenticated ? (
               <>
-                <span className="block text-gray-700 font-medium px-1">
-                  Hola, {user?.nombre}
-                </span>
+                <Button
+                  variant="outline"
+                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
+                  onClick={goDashboard}
+                >
+                  Dashboard
+                </Button>
                 <Button
                   variant="outline"
                   className="w-full border-gray-400 text-gray-600"

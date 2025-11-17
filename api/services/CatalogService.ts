@@ -21,7 +21,7 @@ export const getServicioById = async (id: string): Promise<Servicio> => {
     console.error(`Error al obtener el servicio ${id}:`, error);
     throw new Error('No se pudo cargar el servicio.');
   }
-};
+};  
 export const getProductos = async ():Promise<Producto[]> =>{
     try {
     const response = await api.get<Producto[]>('/productos');

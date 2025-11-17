@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import {
   CreditCard,
   ArrowRight,
-  Star,
 } from 'lucide-react';
 const Balance = ()=> {
   return (
@@ -26,7 +25,7 @@ const Balance = ()=> {
                 <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                   Fluidos
                 </span>{' '}
-                para tu Negocio
+                para ti
               </h1>
 
               <p className="text-xl text-gray-600 leading-relaxed">

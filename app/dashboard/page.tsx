@@ -47,7 +47,7 @@ const Dashboard = () => {
             </Button>
           </Link>
 
-          <Link href="/dashboard/historial" passHref>
+          <Link href="/dashboard/history" passHref>
               <Button variant="outline" size="lg" className="w-full h-24 text-lg justify-start p-6 border-gray-200 hover:bg-gray-50">
               <History className="w-6 h-6 mr-4 text-gray-600" />
               <div>

@@ -19,8 +19,8 @@ const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/dashboard/services", label: "Servicios", icon: LayoutGrid },
   { href: "/dashboard/products", label: "Productos", icon: Package },
-  { href: "/dashboard/historial", label: "Historial", icon: History },
-  { href: "/dashboard/configuracion", label: "Configuración", icon: Settings },
+  { href: "/dashboard/history", label: "Historial", icon: History },
+  { href: "/dashboard/configuration", label: "Configuración", icon: Settings },
 ];
 interface SidebarProps {
   onOpenCart: () => void;
@@ -125,11 +125,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         {SidebarContent}
       </aside>
 
-      {/* 3. SIDEBAR MÓVIL (Animado) */}
       <AnimatePresence>
         {mobileOpen && (
           <>
-            {/* Fondo oscuro (Backdrop) */}
             <motion.div
               className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
               initial={{ opacity: 0 }}
@@ -139,7 +137,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               onClick={onMobileClose}
             />
 
-            {/* Panel del Menú */}
             <motion.aside
               className="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-xl flex flex-col lg:hidden"
               initial={{ x: "-100%" }}

@@ -2,22 +2,29 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useRouter } from 'next/navigation';
+import { Button } from '../ui/button';
 const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
-  const [email,setEmail] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const { login, loading } = useAuth();
-  const handleSubmit = async (e:React.FormEvent) =>{
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    try{
-      await login(email,password);
+    try {
+      await login(email, password);
       onClose();
-    }catch(err:any){
+    } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión')
     }
   }
+  const handleBcpLogin = async () => {
+    const success = await login(email, password);
+    if (success) {
+      onClose();
+    }
+  };
   return (
     <AnimatePresence>
       {isOpen && (
@@ -131,7 +138,27 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                 {loading ? 'Cargando...' : 'Entrar'}
               </button>
             </form>
-
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">O ingresa con tu banco</span>
+              </div>
+            </div>
+            <div className='flex justify-center'>
+              <Button
+                type="button"
+                onClick={handleBcpLogin}
+                className="bg-[#0033A0] hover:bg-[#002a80] text-white flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z" clipRule="evenodd" />
+                </svg>
+                Ingresar con BCP
+              </Button>
+            </div>
             <div className="px-6 pb-6 pt-2 text-center text-sm text-gray-600">
               ¿No tienes cuenta?
               <button
