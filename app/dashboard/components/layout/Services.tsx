@@ -17,32 +17,32 @@ const serviceTypeInfo = {
   'UTILIDAD': {
     label: 'Servicio Básico',
     icon: Zap,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
+    color: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'bg-blue-100 dark:bg-blue-900/20',
   },
   'SUSCRIPCION': {
     label: 'Suscripción',
     icon: Star,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
+    color: 'text-purple-600 dark:text-purple-400',
+    bgColor: 'bg-purple-100 dark:bg-purple-900/20',
   },
   'CINE': {
     label: 'Cine',
     icon: Film,
-    color: 'text-red-600',
-    bgColor: 'bg-red-50',
+    color: 'text-red-600 dark:text-red-400',
+    bgColor: 'bg-red-100 dark:bg-red-900/20',
   },
   'EVENTO': {
     label: 'Evento',
     icon: Ticket,
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
+    color: 'text-green-600 dark:text-green-400',
+    bgColor: 'bg-green-100 dark:bg-green-900/20',
   },
   'OTRO': {
     label: 'Otro Servicio',
     icon: Package,
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-50',
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted',
   }
 };
 
@@ -85,17 +85,17 @@ const Services = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
-        <p className="ml-3 text-lg text-gray-600">Cargando servicios...</p>
+        <p className="ml-3 text-lg text-muted-foreground">Cargando servicios...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-64 bg-red-50 border border-red-200 rounded-lg p-6">
+      <div className="flex flex-col items-center justify-center h-64 bg-destructive/10 border border-destructive/30 rounded-lg p-6">
         <AlertCircle className="w-12 h-12 text-red-500" />
         <p className="mt-4 text-lg font-semibold text-red-700">¡Error!</p>
-        <p className="text-gray-600">{error}</p>
+        <p className="text-muted-foreground">{error}</p>
       </div>
     );
   }
@@ -105,19 +105,19 @@ const Services = () => {
         Pagar Servicios
       </h1>
       <div className="relative w-full md:w-72 mb-5">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <input
           name="search"
           type="text"
           placeholder="Buscar servicio..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          className="w-full pl-10 pr-4 py-2 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
         />
       </div>
 
       {serviciosFiltrados.length === 0 && !isLoading ? (
-        <p className="text-gray-500 text-center py-4">
+        <p className="text-muted-foreground text-center py-4">
           No hay servicios disponibles para pagar en este momento.
         </p>
       ) : (
@@ -128,10 +128,10 @@ const Services = () => {
             const Icon = typeInfo.icon;
 
             return (
-              <Card key={servicio.idServicio} className="flex flex-col justify-between hover:shadow-lg transition-shadow overflow-hidden cursor-pointer">
+              <Card key={servicio.idServicio} className="bg-card border border-border flex flex-col justify-between hover:shadow-lg transition-shadow overflow-hidden cursor-pointer">
                 <Link href={`/dashboard/services/${servicio.idServicio}`} passHref>
                   <CardHeader className="p-0">
-                    <div className="w-full h-48 rounded-t-lg bg-gray-100 flex items-center justify-center relative">
+                    <div className="w-full h-48 rounded-t-lg bg-secondary flex items-center justify-center relative">
                       {servicio.imagenURL ? (
                         <Image
                           src={servicio.imagenURL}
@@ -140,7 +140,7 @@ const Services = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Icon className="w-16 h-16 text-gray-300" />
+                        <Icon className="w-16 h-16 text-muted-foreground/50" />
                       )}
                     </div>
                   </CardHeader>
@@ -151,11 +151,11 @@ const Services = () => {
                     </div>
                     <CardTitle className="text-xl mb-2">{servicio.nombre}</CardTitle>
 
-                    <p className="text-sm text-gray-600 mb-4 flex-grow min-h-[60px]">
+                    <p className="text-sm text-muted-foreground mb-4 flex-grow min-h-[60px]">
                       {servicio.sinopsis || servicio.descripcion || 'Servicio sin descripción.'}
                     </p>
                     {servicio.fecha_evento && (
-                      <div className="flex items-center text-sm text-gray-500 mb-1">
+                      <div className="flex items-center text-sm text-muted-foreground mb-1">
                         <CalendarDays className="w-4 h-4 mr-2" />
                         {new Date(servicio.fecha_evento).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </div>
@@ -164,12 +164,12 @@ const Services = () => {
                       <div className="flex items-center text-sm text-yellow-500 mb-3">
                         <Star className="w-4 h-4 mr-1 fill-current" />
                         <span className="font-bold">{servicio.rating.toFixed(1)}</span>
-                        <span className="text-gray-400 ml-1">/ 5.0</span>
+                        <span className="text-muted-foreground/70 ml-1">/ 5.0</span>
                       </div>
                     )}
 
                     <div className="text-right mt-auto">
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {servicio.tipo_servicio === 'SUSCRIPCION' ? 'Monto Mensual' : 'Monto a Pagar'}
                       </p>
                       <p className="text-2xl font-bold text-foreground mb-4">

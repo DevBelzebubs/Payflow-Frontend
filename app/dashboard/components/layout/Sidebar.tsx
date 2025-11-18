@@ -40,7 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const pathname = usePathname();
   const SidebarContent = (
     <div className="flex flex-col h-full">
-      <div className="h-20 flex items-center justify-between px-6 border-b border-gray-200 flex-shrink-0">
+      <div className="h-20 flex items-center justify-between px-6 border-b border-border flex-shrink-0">
         <div className="flex items-center space-x-2">
           <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
             <Zap className="w-6 h-6 text-white" />
@@ -69,8 +69,8 @@ const Sidebar: React.FC<SidebarProps> = ({
               className={cn(
                 "flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium",
                 isActive
-                  ? "bg-orange-50 text-orange-600"
-                  : "text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+                  ? "bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
+                  : "text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
               )}
               onClick={onMobileClose}
             >
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             onOpenCart();
             onMobileClose();
           }}
-          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
         >
           <ShoppingCart className="w-5 h-5" />
           <span>Mi Carrito</span>
@@ -96,21 +96,21 @@ const Sidebar: React.FC<SidebarProps> = ({
         </button>
       </nav>
 
-      <div className="mt-auto p-4 border-t border-gray-200">
+      <div className="mt-auto p-4 border-t border-border">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-semibold">
+          <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-semibold">
             {user?.nombre.charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-sm font-semibold text-foreground">
               {user?.nombre}
             </p>
-            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>
         <Button
           variant="ghost"
-          className="w-full justify-start text-gray-600 hover:bg-red-50 hover:text-red-600"
+          className="w-full justify-start text-muted-foreground hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400"
           onClick={logout}
         >
           <LogOut className="w-5 h-5 mr-3" />
@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             />
 
             <motion.aside
-              className="fixed top-0 left-0 z-50 w-72 h-screen bg-white shadow-xl flex flex-col lg:hidden"
+              className="fixed top-0 left-0 z-50 w-72 h-screen bg-card shadow-xl flex flex-col lg:hidden"
               initial={{ x: "-100%" }}
               animate={{ x: "0%" }}
               exit={{ x: "-100%" }}

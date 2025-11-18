@@ -15,13 +15,13 @@ const Sales = () =>{
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             ¿Listo para transformar tus pagos?
           </h2>
-          <p className="text-xl text-orange-50 mb-8 leading-relaxed">
+          <p className="text-xl text-orange-50 dark:text-blue-100 mb-8 leading-relaxed">
             Únete a miles de empresas que ya están usando PayFlow para crecer
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-white text-orange-600 hover:bg-orange-50 shadow-xl hover:shadow-2xl transition-all duration-300 text-lg group"
+              className="bg-white text-orange-600 hover:bg-orange-50 shadow-xl hover:shadow-2xl transition-all duration-300 text-lg group dark:text-black"
             >
               Comenzar Gratis
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

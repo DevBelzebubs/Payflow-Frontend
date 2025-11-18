@@ -51,7 +51,7 @@ const Page = () => {
     setShowLogin(false);
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-orange-50">
+    <div className="min-h-screen bg-background from-white to-orange-50">
       <TopBar isScrolled={isScrolled} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={() => setMobileMenuOpen(!mobileMenuOpen)} openLogin={showLogin} 
       setOpenLogin={toggleLogin} openRegister={showRegister} setOpenRegister={toggleRegister}></TopBar>
       <Balance></Balance>

@@ -17,11 +17,36 @@ import { cn } from '@/lib/utils';
 import { StarRating } from '../../products/[id]/StarRating';
 
 const serviceTypeInfo = {
-  'UTILIDAD': { label: 'Servicio Básico', icon: Zap, color: 'text-blue-600' },
-  'SUSCRIPCION': { label: 'Suscripción', icon: Star, color: 'text-purple-600' },
-  'CINE': { label: 'Cine', icon: Film, color: 'text-red-600' },
-  'EVENTO': { label: 'Evento', icon: Ticket, color: 'text-green-600' },
-  'OTRO': { label: 'Otro Servicio', icon: Package, color: 'text-gray-600' }
+  'UTILIDAD': {
+    label: 'Servicio Básico',
+    icon: Zap,
+    color: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'bg-blue-100 dark:bg-blue-900/20'
+  },
+  'SUSCRIPCION': {
+    label: 'Suscripción',
+    icon: Star,
+    color: 'text-purple-600 dark:text-purple-400',
+    bgColor: 'bg-purple-100 dark:bg-purple-900/20'
+  },
+  'CINE': {
+    label: 'Cine',
+    icon: Film,
+    color: 'text-red-600 dark:text-red-400',
+    bgColor: 'bg-red-100 dark:bg-red-900/20'
+  },
+  'EVENTO': {
+    label: 'Evento',
+    icon: Ticket,
+    color: 'text-green-600 dark:text-green-400',
+    bgColor: 'bg-green-100 dark:bg-green-900/20'
+  },
+  'OTRO': {
+    label: 'Otro Servicio',
+    icon: Package,
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted'
+  }
 };
 
 const getYouTubeVideoId = (url: string | null): string | null => {
@@ -88,17 +113,17 @@ const ServiceDetailPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-        <p className="ml-4 text-lg text-gray-600">Cargando servicio...</p>
+        <p className="ml-4 text-lg text-muted-foreground">Cargando servicio...</p>
       </div>
     );
   }
 
   if (error || !servicio) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 bg-red-50 border border-red-200 rounded-lg p-6">
-        <AlertCircle className="w-12 h-12 text-red-500" />
-        <p className="mt-4 text-xl font-semibold text-red-700">{error || 'Servicio no encontrado'}</p>
-        <Button asChild variant="link" className="text-orange-600 mt-2">
+      <div className="flex flex-col items-center justify-center h-96 bg-destructive/10 border border-destructive/30 rounded-lg p-6">
+        <AlertCircle className="w-12 h-12 text-destructive" />
+        <p className="mt-4 text-xl font-semibold text-destructive">{error || 'Servicio no encontrado'}</p>
+        <Button asChild variant="link" className="text-primary hover:text-primary/80 mt-2">
           <Link href="/dashboard/services"><ArrowLeft className="w-4 h-4 mr-2" />Volver a Servicios</Link>
         </Button>
       </div>
@@ -118,7 +143,7 @@ const ServiceDetailPage = () => {
     <div>
 
       {youtubeVideoIdForBanner && (
-        <div className="w-full h-72 md:h-96 bg-background flex flex-col justify-end overflow-hidden relative mb-8 rounded-lg">
+        <div className="w-full h-72 md:h-96 bg-secondary flex flex-col justify-end overflow-hidden relative mb-8 rounded-lg">
           <div
             className="video-banner-wrap"
             aria-hidden="true"
@@ -153,7 +178,7 @@ const ServiceDetailPage = () => {
             ></iframe>
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent dark:from-background/80 dark:to-transparent z-10" />
 
           <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-8">
             <h1 className="text-4xl lg:text-5xl font-bold text-white shadow-lg">
@@ -165,7 +190,7 @@ const ServiceDetailPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-4">
-          <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-gray-900 px-0">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground px-0">
             <Link href="/dashboard/services">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver a Servicios
@@ -175,7 +200,7 @@ const ServiceDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
           <div className="lg:col-span-3">
-            <div className="w-full max-w-md mx-auto lg:max-w-none rounded-lg overflow-hidden border shadow-lg">
+            <div className="w-full max-w-md mx-auto lg:max-w-none rounded-lg overflow-hidden border border-border shadow-lg">
               {posterImageUrl ? (
                 <img
                   src={posterImageUrl}
@@ -183,7 +208,7 @@ const ServiceDetailPage = () => {
                   className="w-full h-auto"
                 />
               ) : (
-                <div className="w-full aspect-video bg-gray-100 flex items-center justify-center">
+                <div className="w-full aspect-video bg-secondary flex items-center justify-center">
                   <Icon className="w-24 h-24 text-gray-300" />
                 </div>
               )}
@@ -212,16 +237,16 @@ const ServiceDetailPage = () => {
               ${servicio.recibo.toFixed(2)}
             </p>
 
-            <p className="text-foreground text-base leading-relaxed mb-6">
+            <p className="text-muted-foreground text-base leading-relaxed mb-6">
               {servicio.sinopsis || servicio.descripcion || "Este servicio no tiene una descripción detallada."}
             </p>
 
             {formattedDate && (
-              <div className="flex items-center text-foreground font-medium mb-6 p-3 bg-background rounded-md border">
+              <div className="flex items-center text-foreground font-medium mb-6 p-3 bg-muted rounded-md border border-border">
                 <CalendarDays className="w-5 h-5 mr-3 text-orange-500" />
                 <div>
-                  <p className="text-xs text-gray-500">Fecha del Evento</p>
-                  <p>{formattedDate}</p>
+                  <p className="text-xs text-muted-foreground">Fecha del Evento</p>
+                  <p className="text-foreground">{formattedDate}</p>
                 </div>
               </div>
             )}
@@ -241,8 +266,8 @@ const ServiceDetailPage = () => {
             </CardHeader>
             <CardContent>
               {servicio.proveedor && (
-              <div className="flex justify-between items-center text-sm p-3 bg-background rounded-md mb-2">
-                  <span className="font-medium text-foreground">Proveedor</span>
+                <div className="flex justify-between items-center text-sm p-3 bg-muted rounded-md mb-2">
+                  <span className="font-medium text-muted-foreground">Proveedor</span>                  
                   <span className="font-medium text-foreground text-right">{servicio.proveedor}</span>
                 </div>
               )}
@@ -250,15 +275,15 @@ const ServiceDetailPage = () => {
               {servicio.info_adicional_json && Object.keys(servicio.info_adicional_json).length > 0 ? (
                 <div className="space-y-2 pt-4">
                   {Object.entries(servicio.info_adicional_json).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center text-sm p-3 bg-background rounded-md">
-                      <span className="font-medium text-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                    <div key={key} className="flex justify-between items-center text-sm p-3 bg-muted rounded-md">
+                      <span className="font-medium text-muted-foreground capitalize">{key.replace(/_/g, ' ')}</span>
                       <span className="font-medium text-foreground text-right">{String(value)}</span>
                     </div>
                   ))}
                 </div>
               ) : (
                 !servicio.proveedor && (
-                  <p className="text-gray-500 text-sm">No hay detalles adicionales disponibles.</p>
+                  <p className="text-muted-foreground text-sm">No hay detalles adicionales disponibles.</p>
                 )
               )}
             </CardContent>

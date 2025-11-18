@@ -20,7 +20,7 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-        ? 'bg-white/90 backdrop-blur-lg shadow-lg'
+        ? 'bg-background/90 backdrop-blur-lg shadow-lg'
         : 'bg-transparent'
         }`}
     >
@@ -38,13 +38,13 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
           <div className="hidden md:flex items-center space-x-8">
             <a
               href="#features"
-              className="text-gray-700 hover:text-orange-600 transition-colors font-medium"
+              className="text-muted-foreground hover:text-orange-600 transition-colors font-medium"
             >
               Características
             </a>
             <a
               href="#how-it-works"
-              className="text-gray-700 hover:text-orange-600 transition-colors font-medium"
+              className="text-muted-foreground hover:text-orange-600 transition-colors font-medium"
             >
               Cómo Funciona
             </a>
@@ -52,14 +52,13 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
               <>
                 <Button
                   variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                  className="border-orange-500 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20"
                   onClick={goDashboard}
                 >
                   Dashboard
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-gray-400 text-gray-600 hover:bg-gray-100"
                   onClick={logout}
                 >
                   Cerrar Sesión
@@ -69,13 +68,13 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
               <>
                 <Button
                   variant="outline"
-                  className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                  className="border-orange-500 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20"
                   onClick={() => setOpenLogin(true)}
                 >
                   Iniciar Sesión
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
                   onClick={() => setOpenRegister(true)}
                 >
                   Comenzar Gratis
@@ -89,34 +88,34 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
-              <X className="w-6 h-6 text-gray-700" />
+              <X className="w-6 h-6 text-foreground" />
             ) : (
-              <Menu className="w-6 h-6 text-gray-700" />
+              <Menu className="w-6 h-6 text-foreground" />
             )}
           </button>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div className="md:hidden bg-background border-t border-border shadow-lg">
           <div className="px-4 py-6 space-y-4">
             <a
               href="#features"
-              className="block text-gray-700 hover:text-orange-600 font-medium"
+              className="block text-muted-foreground hover:text-orange-600 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Características
             </a>
             <a
               href="#how-it-works"
-              className="block text-gray-700 hover:text-orange-600 font-medium"
+              className="block text-muted-foreground hover:text-orange-600 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Cómo Funciona
             </a>
             <a
               href="#testimonials"
-              className="block text-gray-700 hover:text-orange-600 font-medium"
+              className="block text-muted-foreground hover:text-orange-600 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               Testimonios
@@ -125,14 +124,14 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
               <>
                 <Button
                   variant="outline"
-                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-50"
+                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20"
                   onClick={goDashboard}
                 >
                   Dashboard
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full border-gray-400 text-gray-600"
+                  className="w-full"
                   onClick={() => {
                     logout();
                     setMobileMenuOpen(false);
@@ -145,7 +144,7 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
               <>
                 <Button
                   variant="outline"
-                  className="w-full border-orange-500 text-orange-600"
+                  className="w-full border-orange-500 text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20"
                   onClick={() => {
                     setOpenLogin(true);
                     setMobileMenuOpen(false);
@@ -154,7 +153,7 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
                   Iniciar Sesión
                 </Button>
                 <Button
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600"
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white"
                   onClick={() => {
                     setOpenRegister(true);
                     setMobileMenuOpen(false);

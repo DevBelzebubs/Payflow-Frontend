@@ -25,7 +25,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="register-title"
@@ -35,20 +35,20 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
           transition={{ duration: 0.25 }}
         >
           <motion.div
-            className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl"
+            className="relative w-full max-w-lg rounded-2xl bg-card border border-border shadow-xl"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 id="register-title" className="text-lg font-semibold text-gray-800">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h2 id="register-title" className="text-lg font-semibold text-foreground">
                 Crear cuenta
               </h2>
               <button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="text-gray-500 hover:text-gray-700"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
               <div>
                 <label
                   htmlFor="reg-name"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Nombre completo
                 </label>
@@ -81,7 +81,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   type="text"
                   autoComplete="name"
                   placeholder="Tu nombre"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
@@ -90,7 +90,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
               <div>
                 <label
                   htmlFor="reg-dni"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   DNI
                 </label>
@@ -101,7 +101,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   autoComplete="off"
                   placeholder="Tu número de DNI"
                   maxLength={8}
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={dni}
                   onChange={(e) => setDni(e.target.value)}
@@ -110,7 +110,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
               <div>
                 <label
                   htmlFor="reg-email"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Correo electrónico
                 </label>
@@ -120,7 +120,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   type="email"
                   autoComplete="email"
                   placeholder="correo@ejemplo.com"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -130,7 +130,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
               <div>
                 <label
                   htmlFor="reg-phone"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Número de teléfono
                 </label>
@@ -141,7 +141,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   inputMode="tel"
                   autoComplete="tel"
                   placeholder="+51 9 1234 5678"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={telefono}
                   onChange={(e) => setTelefono(e.target.value)}
@@ -150,7 +150,7 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
               <div>
                 <label
                   htmlFor="reg-password"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Contraseña
                 </label>
@@ -160,30 +160,30 @@ const Register: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLog
                   type="password"
                   autoComplete="new-password"
                   placeholder="Crea una contraseña segura"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               {error && (
-                <p className="text-sm text-red-600 text-center">{error}</p>
+                <p className="text-sm text-destructive text-center">{error}</p>
               )}
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-1 w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:opacity-70"
+                className="mt-1 w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300 disabled:opacity-70 transition-colors"
               >
                 {loading ? 'Registrando...' : 'Registrarme'}
               </button>
             </form>
 
-            <div className="px-6 pb-6 pt-2 text-center text-sm text-gray-600">
+            <div className="px-6 pb-6 pt-2 text-center text-sm text-muted-foreground">
               ¿Ya tienes cuenta?
               <button
                 type="button"
                 onClick={onSwitchToLogin}
-                className="ml-1 font-medium text-orange-600 hover:underline"
+                className="ml-1 font-medium text-orange-600 hover:underline dark:text-orange-500"
               >
                 Inicia sesión
               </button>

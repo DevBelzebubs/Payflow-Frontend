@@ -37,25 +37,25 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                         transition={{ duration: 0.25, ease: 'easeOut' }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between px-6 py-4 border-b">
-                            <h2 id="cart-title" className="text-lg font-semibold text-gray-800 flex items-center">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                            <h2 id="cart-title" className="text-lg font-semibold text-foreground flex items-center">
                                 <ShoppingCart className="w-5 h-5 mr-2 text-orange-500" />
                                 Mi Carrito ({itemCount})
                             </h2>
-                            <button onClick={onClose} aria-label="Cerrar" className="text-gray-500 hover:text-gray-700">
+                            <button onClick={onClose} aria-label="Cerrar" className="text-muted-foreground hover:text-foreground transition-colors">
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-6 space-y-4">
                             {itemCount === 0 ? (
-                                <div className="text-center text-gray-500 py-10">
+                                <div className="text-center text-muted-foreground py-10">
                                     <p>Tu carrito está vacío.</p>
                                 </div>
                             ) : (
                                 cart.map((item) => (
                                     <div key={item.id} className="flex items-center space-x-4">
-                                        <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
                                             {item.imagen_url ? (
                                                 <img
                                                     src={item.imagen_url}
@@ -63,23 +63,23 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
                                             ) : (
-                                                <Package className="w-6 h-6 text-gray-400" />
+                                                <Package className="w-6 h-6 text-muted-foreground/50" />
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-gray-800 truncate">{item.nombre}</p>
-                                            <p className="text-sm text-gray-500">
+                                            <p className="font-medium text-foreground truncate">{item.nombre}</p>
+                                            <p className="text-sm text-muted-foreground">
                                                 {item.quantity} x ${item.precio.toFixed(2)}
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <p className="font-semibold text-gray-900">
+                                            <p className="font-semibold text-foreground">
                                                 ${(item.precio * item.quantity).toFixed(2)}
                                             </p>
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                className="text-red-500 hover:text-red-600 hover:bg-red-50 h-auto p-1"
+                                                className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 h-auto p-1"
                                                 onClick={() => removeFromCart(item.id)}
                                             >
                                                 Quitar
@@ -91,7 +91,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                         </div>
 
                         {itemCount > 0 && (
-                            <div className="px-6 py-4 border-t space-y-4">
+                            <div className="px-6 py-4 border-t border-border space-y-4">
                                 <div className="flex justify-between items-center text-lg font-semibold">
                                     <span>Total:</span>
                                     <span>${total.toFixed(2)}</span>
@@ -101,8 +101,8 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                         <Trash2 className="w-4 h-4 mr-2" />
                                         Vaciar Carrito
                                     </Button>
-                                    
-                                    <Button className="w-full bg-orange-500 hover:bg-orange-600" onClick={handleCheckout}>
+
+                                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white" onClick={handleCheckout}>
                                         <CreditCard className="w-4 h-4 mr-2" />
                                         Proceder al Pago
                                     </Button>

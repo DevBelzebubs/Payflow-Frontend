@@ -23,7 +23,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
     setError(null);
     try {
       await login(email, password);
-      onClose(); 
+      onClose();
     } catch (err: any) {
       setError(err.message || "Error al iniciar sesión con BCP");
     }
@@ -32,7 +32,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="login-title"
@@ -42,20 +42,20 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
           transition={{ duration: 0.25 }}
         >
           <motion.div
-            className="relative w-full max-w-md rounded-2xl bg-white shadow-xl"
+            className="relative w-full max-w-md rounded-2xl bg-card border border-border shadow-xl"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 id="login-title" className="text-lg font-semibold text-gray-800">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h2 id="login-title" className="text-lg font-semibold text-foreground">
                 Iniciar sesión
               </h2>
               <button
                 onClick={onClose}
                 aria-label="Cerrar"
-                className="text-gray-500 hover:text-gray-700"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +78,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
               <div className="mb-4">
                 <label
                   htmlFor="login-email"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Correo electrónico
                 </label>
@@ -88,7 +88,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                   type="email"
                   autoComplete="email"
                   placeholder="Ingresa tu correo"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
               <div className="mb-4">
                 <label
                   htmlFor="login-password"
-                  className="mb-2 block text-sm font-medium text-gray-700"
+                  className="mb-2 block text-sm font-medium text-foreground"
                 >
                   Contraseña
                 </label>
@@ -108,7 +108,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                   type="password"
                   autoComplete="current-password"
                   placeholder="Ingresa tu contraseña"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-orange-400"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -116,44 +116,48 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
               </div>
 
               <div className="flex items-center justify-between mb-4">
-                <label className="inline-flex items-center text-sm text-gray-600">
+                <label className="inline-flex items-center text-sm text-muted-foreground">
                   <input
                     type="checkbox"
                     name="remember"
-                    className="h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-400"
+                    className="h-4 w-4 rounded border-input text-orange-500 focus:ring-orange-400 bg-background"
                   />
                   <span className="ml-2">Recuérdame</span>
                 </label>
                 <a
                   href="#"
-                  className="text-sm font-medium text-orange-600 hover:underline"
+                  className="text-sm font-medium text-orange-600 hover:underline dark:text-orange-500"
                 >
                   ¿Olvidaste la contraseña?
                 </a>
               </div>
+
               {error && (
-                <p className="text-sm text-red-600 text-center mb-4">{error}</p>
+                <p className="text-sm text-destructive text-center mb-4">{error}</p>
               )}
+
               <button
                 type="submit"
-                className="w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                className="w-full rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors"
               >
                 {loading ? 'Cargando...' : 'Entrar'}
               </button>
             </form>
+
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">O ingresa con tu banco</span>
+                <span className="px-2 bg-card text-muted-foreground">O ingresa con tu banco</span>
               </div>
             </div>
-            <div className='flex justify-center'>
+
+            <div className='flex justify-center px-6'>
               <Button
                 type="button"
                 onClick={handleBcpLogin}
-                className="bg-[#0033A0] hover:bg-[#002a80] text-white flex items-center justify-center gap-2"
+                className="w-full bg-[#0033A0] hover:bg-[#002a80] text-white flex items-center justify-center gap-2"
                 disabled={loading}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -162,12 +166,13 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                 Ingresar con BCP
               </Button>
             </div>
-            <div className="px-6 pb-6 pt-2 text-center text-sm text-gray-600">
+
+            <div className="px-6 pb-6 pt-4 text-center text-sm text-muted-foreground">
               ¿No tienes cuenta?
               <button
                 type="button"
                 onClick={onSwitchToRegister}
-                className="ml-1 font-medium text-orange-600 hover:underline"
+                className="ml-1 font-medium text-orange-600 hover:underline dark:text-orange-500"
               >
                 Regístrate
               </button>
