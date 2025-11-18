@@ -29,7 +29,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                     transition={{ duration: 0.25 }}
                 >
                     <motion.div
-                        className="relative w-full max-w-lg rounded-2xl bg-white shadow-xl flex flex-col"
+                        className="relative w-full max-w-lg rounded-2xl bg-background shadow-xl flex flex-col"
                         style={{ height: 'calc(100vh - 80px)', maxHeight: '700px' }}
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}

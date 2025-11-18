@@ -20,9 +20,12 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
     }
   }
   const handleBcpLogin = async () => {
-    const success = await login(email, password);
-    if (success) {
-      onClose();
+    setError(null);
+    try {
+      await login(email, password);
+      onClose(); 
+    } catch (err: any) {
+      setError(err.message || "Error al iniciar sesión con BCP");
     }
   };
   return (

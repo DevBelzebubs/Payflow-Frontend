@@ -75,19 +75,19 @@ const HistoryPage = () => {
                           <p className="font-medium">
                             {item.producto_id ? `Producto (ID: ...${item.producto_id.slice(-4)})` : `Servicio (ID: ...${item.servicio_id.slice(-4)})`}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-foreground">
                             {item.cantidad} x ${item.precio_unitario.toFixed(2)}
                           </p>
                         </div>
                       </div>
-                      <p className="font-semibold text-gray-800">${item.subtotal.toFixed(2)}</p>
+                      <p className="font-semibold text-foreground">${item.subtotal.toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
                 
                 <div className="justify-between items-center pt-4 mt-4">
                   <div className="text-right">
-                    <p className="text-sm text-gray-500">Total Pagado</p>
+                    <p className="text-sm text-foreground">Total Pagado</p>
                     <p className="text-2xl font-bold text-orange-600">
                       ${orden.total.toFixed(2)}
                     </p>

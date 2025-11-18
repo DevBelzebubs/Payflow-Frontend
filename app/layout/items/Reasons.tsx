@@ -21,7 +21,7 @@ const Reasons = ({visibleSections}:StepsProps)=> {
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Configura tu cuenta y empieza a recibir pagos en minutos
+              Configura tu cuenta y empieza a realizar pagos en minutos
             </p>
           </div>
 
@@ -37,7 +37,7 @@ const Reasons = ({visibleSections}:StepsProps)=> {
                 step: '02',
                 title: 'Configura Pagos',
                 description:
-                  'Conecta tus métodos de pago',
+                  'Tus métodos de pago se conectan de manera automática y segura',
               },
             ].map((item, index) => (
               <div

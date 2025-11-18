@@ -101,7 +101,7 @@ const Services = () => {
   }
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">
+      <h1 className="text-3xl font-bold text-foreground mb-8">
         Pagar Servicios
       </h1>
       <div className="relative w-full md:w-72 mb-5">
@@ -172,7 +172,7 @@ const Services = () => {
                       <p className="text-xs text-gray-500">
                         {servicio.tipo_servicio === 'SUSCRIPCION' ? 'Monto Mensual' : 'Monto a Pagar'}
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 mb-4">
+                      <p className="text-2xl font-bold text-foreground mb-4">
                         ${servicio.recibo.toFixed(2)}
                       </p>
                       <Button className="w-full bg-orange-500 hover:bg-orange-600">

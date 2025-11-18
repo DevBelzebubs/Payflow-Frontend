@@ -46,7 +46,7 @@ const Features = ({visibleSections}:StepsProps)=> {
               ?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Todas las herramientas que necesitas para gestionar pagos de
+              Todas las herramientas que necesitas para realizar pagos de
               forma profesional
             </p>
           </div>

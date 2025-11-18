@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import Sidebar from './components/layout/Sidebar';
 import Cart from './components/cart/Cart';
 import DashboardHeader from './components/layout/DashboardHeader';
+import WelcomeModal from './components/layout/WelcomeModal';
 
 const Page = ({children,}:{children: React.ReactNode}) => {
-  const { isAuthenticated, loading } = useAuth();
-  const router = useRouter();
+const { isAuthenticated, loading, showWelcomeModal, closeWelcomeModal } = useAuth();  
+const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   useEffect(() => {
@@ -26,7 +27,7 @@ const Page = ({children,}:{children: React.ReactNode}) => {
 
  if (isAuthenticated) {
     return (
-      <div className="flex min-h-screen bg-gray-50">        
+      <div className="flex min-h-screen bg-background text-foreground">        
         <Sidebar 
           onOpenCart={() => setIsCartOpen(true)}
           mobileOpen={isSidebarOpen}
@@ -39,6 +40,10 @@ const Page = ({children,}:{children: React.ReactNode}) => {
           <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
             {children}
           </main>
+          <WelcomeModal 
+           isOpen={showWelcomeModal} 
+           onClose={closeWelcomeModal} 
+        />
         </div>
         <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
       </div>

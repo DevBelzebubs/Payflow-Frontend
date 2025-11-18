@@ -18,7 +18,7 @@ const Dashboard = () => {
         Gestiona tus pagos y productos desde un solo lugar.
       </p>
 
-      <Card className="bg-white border border-gray-200 shadow-sm">
+      <Card className="bg-card border border-gray-200 shadow-sm">
         <CardHeader>
           <CardTitle>Acciones Rápidas</CardTitle>
           <CardDescription>

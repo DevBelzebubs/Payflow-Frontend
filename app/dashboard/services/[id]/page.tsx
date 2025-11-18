@@ -118,8 +118,7 @@ const ServiceDetailPage = () => {
     <div>
 
       {youtubeVideoIdForBanner && (
-        <div className="w-full h-72 md:h-96 bg-gray-900 flex flex-col justify-end overflow-hidden relative mb-8 rounded-lg">
-
+        <div className="w-full h-72 md:h-96 bg-background flex flex-col justify-end overflow-hidden relative mb-8 rounded-lg">
           <div
             className="video-banner-wrap"
             aria-hidden="true"
@@ -166,7 +165,7 @@ const ServiceDetailPage = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-4">
-          <Button asChild variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 px-0">
+          <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-gray-900 px-0">
             <Link href="/dashboard/services">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver a Servicios
@@ -200,7 +199,7 @@ const ServiceDetailPage = () => {
             </span>
 
             {!youtubeVideoIdForBanner && (
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mt-1 mb-2">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mt-1 mb-2">
                 {servicio.nombre}
               </h2>
             )}
@@ -213,12 +212,12 @@ const ServiceDetailPage = () => {
               ${servicio.recibo.toFixed(2)}
             </p>
 
-            <p className="text-gray-600 text-base leading-relaxed mb-6">
+            <p className="text-foreground text-base leading-relaxed mb-6">
               {servicio.sinopsis || servicio.descripcion || "Este servicio no tiene una descripción detallada."}
             </p>
 
             {formattedDate && (
-              <div className="flex items-center text-gray-700 font-medium mb-6 p-3 bg-gray-50 rounded-md border">
+              <div className="flex items-center text-foreground font-medium mb-6 p-3 bg-background rounded-md border">
                 <CalendarDays className="w-5 h-5 mr-3 text-orange-500" />
                 <div>
                   <p className="text-xs text-gray-500">Fecha del Evento</p>
@@ -242,18 +241,18 @@ const ServiceDetailPage = () => {
             </CardHeader>
             <CardContent>
               {servicio.proveedor && (
-                <div className="flex justify-between items-center text-sm p-3 bg-gray-50 rounded-md mb-2">
-                  <span className="font-medium text-gray-600">Proveedor</span>
-                  <span className="font-medium text-gray-900 text-right">{servicio.proveedor}</span>
+              <div className="flex justify-between items-center text-sm p-3 bg-background rounded-md mb-2">
+                  <span className="font-medium text-foreground">Proveedor</span>
+                  <span className="font-medium text-foreground text-right">{servicio.proveedor}</span>
                 </div>
               )}
 
               {servicio.info_adicional_json && Object.keys(servicio.info_adicional_json).length > 0 ? (
                 <div className="space-y-2 pt-4">
                   {Object.entries(servicio.info_adicional_json).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center text-sm p-3 bg-gray-50 rounded-md">
-                      <span className="font-medium text-gray-600 capitalize">{key.replace(/_/g, ' ')}</span>
-                      <span className="font-medium text-gray-900 text-right">{String(value)}</span>
+                    <div key={key} className="flex justify-between items-center text-sm p-3 bg-background rounded-md">
+                      <span className="font-medium text-foreground capitalize">{key.replace(/_/g, ' ')}</span>
+                      <span className="font-medium text-foreground text-right">{String(value)}</span>
                     </div>
                   ))}
                 </div>

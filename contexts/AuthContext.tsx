@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [showWelcomeModal, setShowWelcomeModal] = useState(false);
     const router = useRouter()
 
     useEffect(() => {
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setLoading(true);
         try {
             const reponse = await AuthService.login(email, pass);
-            const { token: newToken, user: loggedUser } = reponse;
+            const { token: newToken, user: loggedUser, isNewUser } = reponse as any;
             
             localStorage.setItem('token', newToken);
             localStorage.setItem('user', JSON.stringify(loggedUser));
@@ -61,7 +62,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setToken(newToken);
             setUser(loggedUser);
             setIsAuthenticated(true);
-
+            if (isNewUser) {
+                setShowWelcomeModal(true);
+            }
             await syncUser(loggedUser.id);
             router.replace('/dashboard')
         } catch (error) {
@@ -90,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             } catch (createError) {
                 console.error("Usuario registrado, pero falló la creación del cliente:", createError);
             }
-            
+            setShowWelcomeModal(true);
             router.replace('/dashboard')
 
         } catch (error: any) {
@@ -126,6 +129,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 login,
                 register,
                 logout,
+                showWelcomeModal,
+                closeWelcomeModal: () => setShowWelcomeModal(false),
             }}
         >
             {children}

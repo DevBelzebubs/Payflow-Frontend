@@ -104,7 +104,7 @@ const Productos = () => {
                   </p>
                   <div className="text-right mt-auto">
                     <p className="text-xs text-gray-500">Precio</p>
-                    <p className="text-xl font-bold text-gray-900 mb-3">
+                    <p className="text-xl font-bold text-foreground mb-3">
                       ${producto.precio.toFixed(2)}
                     </p>
                     <Button

@@ -11,4 +11,6 @@ export interface AuthContextType {
   login: (email: string, pass: string) => Promise<void>;
   register: (nombre: string, email: string, pass: string, telefono: string, dni: string) => Promise<void>;
   logout: () => void;
+  showWelcomeModal: boolean;
+  closeWelcomeModal: () => void;
 }

@@ -20,7 +20,7 @@ const navItems = [
   { href: "/dashboard/services", label: "Servicios", icon: LayoutGrid },
   { href: "/dashboard/products", label: "Productos", icon: Package },
   { href: "/dashboard/history", label: "Historial", icon: History },
-  { href: "/dashboard/configuration", label: "Configuración", icon: Settings },
+  { href: "/dashboard/config", label: "Configuración", icon: Settings },
 ];
 interface SidebarProps {
   onOpenCart: () => void;
@@ -121,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
   return (
     <>
-      <aside className="hidden md:flex w-64 flex-shrink-0 bg-white border-r border-gray-200 flex-col h-screen sticky top-0">
+      <aside className="hidden md:flex w-64 flex-shrink-0 bg-card border-r border-border text-card-foreground flex-col h-screen sticky top-0">
         {SidebarContent}
       </aside>
 
