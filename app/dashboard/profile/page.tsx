@@ -24,7 +24,7 @@ import { updateUserProfile, UpdateProfileDTO } from '@/api/services/UserService'
 import { Input } from '@/components/ui/input';
 
 export default function ProfilePage() {
-  const { user, logout, syncUser } = useAuth() as any;
+  const { user, logout, syncUser, setUser } = useAuth() as any;
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -87,19 +87,21 @@ export default function ProfilePage() {
 
     try {
       setIsUploading(true);
-
       const base64Image = await convertToBase64(file);
 
       const updateData: UpdateProfileDTO = {
         [type === 'banner' ? 'banner_url' : 'avatar_url']: base64Image
       };
 
-      await updateUserProfile(updateData);
+      const updatedUser = await updateUserProfile(updateData);
+
+      if (setUser) setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
 
       if (type === 'banner') {
         setBannerUrl(base64Image);
-      } else {
       }
+      
       const token = localStorage.getItem('token');
       if (token && syncUser) {
         await syncUser(token);
@@ -107,7 +109,7 @@ export default function ProfilePage() {
 
     } catch (error) {
       console.error("Error al subir imagen:", error);
-      alert("Hubo un error al guardar la imagen. Intenta con una imagen más ligera.");
+      alert("Hubo un error al guardar la imagen.");
     } finally {
       setIsUploading(false);
     }

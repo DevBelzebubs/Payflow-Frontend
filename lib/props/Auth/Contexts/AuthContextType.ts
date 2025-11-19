@@ -3,6 +3,7 @@ import { User } from "@/interfaces/User";
 
 export interface AuthContextType {
   user: User | null;
+  setUser: (user: User | null) => void;
   cliente: Cliente | null;
   setCliente: (cliente: Cliente | null) => void;
   token: string | null;
