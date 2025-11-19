@@ -17,13 +17,15 @@ import {
   Building2,
   Loader2,
   Save,
-  X
+  X,
+  Trash2
 } from 'lucide-react';
 import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import { updateUserProfile, UpdateProfileDTO } from '@/api/services/UserService';
 import { Input } from '@/components/ui/input';
 
 export default function ProfilePage() {
+  const DEFAULT_BANNER = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
   const { user, logout, syncUser, setUser } = useAuth() as any;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -53,9 +55,7 @@ export default function ProfilePage() {
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
-  const [bannerUrl, setBannerUrl] = useState(
-    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-  );
+  const [bannerUrl, setBannerUrl] = useState(DEFAULT_BANNER);
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -80,7 +80,31 @@ export default function ProfilePage() {
       reader.onerror = (error) => reject(error);
     });
   };
+  const handleDeleteImage = async (type: 'banner' | 'avatar') => {
+    if (!confirm(`¿Estás seguro de que quieres eliminar ${type === 'banner' ? 'el banner' : 'la foto de perfil'}?`)) return;
 
+    try {
+      setIsUploading(true);
+      const updateData: UpdateProfileDTO = {
+        [type === 'banner' ? 'banner_url' : 'avatar_url']: ""
+      };
+
+      const updatedUser = await updateUserProfile(updateData);
+
+      if (setUser) setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      if (type === 'banner') {
+        setBannerUrl(DEFAULT_BANNER);
+      }
+
+    } catch (error) {
+      console.error("Error eliminando imagen:", error);
+      alert("No se pudo eliminar la imagen.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
   const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>, type: 'banner' | 'avatar') => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -101,7 +125,7 @@ export default function ProfilePage() {
       if (type === 'banner') {
         setBannerUrl(base64Image);
       }
-      
+
       const token = localStorage.getItem('token');
       if (token && syncUser) {
         await syncUser(token);
@@ -154,7 +178,6 @@ export default function ProfilePage() {
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
-
           <input
             type="file"
             ref={bannerInputRef}
@@ -163,7 +186,18 @@ export default function ProfilePage() {
             onChange={(e) => handleImageUpload(e, 'banner')}
             disabled={isUploading}
           />
-
+          {bannerUrl !== DEFAULT_BANNER && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="absolute top-4 right-52 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 cursor-pointer shadow-md"
+              onClick={() => handleDeleteImage('banner')}
+              disabled={isUploading}
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Borrar
+            </Button>
+          )}
           <Button
             variant="secondary"
             size="sm"
@@ -183,7 +217,6 @@ export default function ProfilePage() {
                 {user?.nombre?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-
             <input
               type="file"
               ref={avatarInputRef}
@@ -192,7 +225,18 @@ export default function ProfilePage() {
               onChange={(e) => handleImageUpload(e, 'avatar')}
               disabled={isUploading}
             />
-
+            {user?.avatar_url && (
+              <Button
+                size="icon"
+                variant="destructive"
+                className="absolute bottom-1 right-15 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 border border-border cursor-pointer"
+                onClick={() => handleDeleteImage('avatar')}
+                disabled={isUploading}
+                title="Eliminar foto"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
             <Button
               size="icon"
               variant="secondary"
