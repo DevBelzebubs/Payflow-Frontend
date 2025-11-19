@@ -14,6 +14,7 @@ import {
   LogOut,
   ShoppingCart,
   X,
+  UserRoundPen
 } from "lucide-react";
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/dashboard/products", label: "Productos", icon: Package },
   { href: "/dashboard/history", label: "Historial", icon: History },
   { href: "/dashboard/config", label: "Configuración", icon: Settings },
+  { href: "/dashboard/profile", label: "Perfil", icon: UserRoundPen },
 ];
 interface SidebarProps {
   onOpenCart: () => void;
