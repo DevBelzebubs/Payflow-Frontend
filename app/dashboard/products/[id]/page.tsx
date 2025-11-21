@@ -27,7 +27,8 @@ const ProductDetailPage = () => {
     if (id) {
       const fetchProduct = async () => {
         try {
-          setIsLoading(true); setError(null);
+          setIsLoading(true); 
+          setError(null);
           const data = await getProductoById(id);
           setProducto(data);
           if (data.stock === 0) setQuantity(0);

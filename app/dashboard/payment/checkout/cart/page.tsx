@@ -62,7 +62,7 @@ const CartCheckoutPage = () => {
       });
       setSuccess(true);
       clearCart();
-      setTimeout(() => router.push('/dashboard/historial'), 3000);
+      setTimeout(() => router.push('/dashboard/history'), 3000);
     } catch (err: any) {
       setError(err.message || 'Error en el pago');
       setIsProcessing(false);

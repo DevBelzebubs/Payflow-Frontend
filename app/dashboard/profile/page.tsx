@@ -1,11 +1,17 @@
-'use client'
+"use client";
 
-import { useAuth } from '@/hooks/auth/useAuth';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+import { useAuth } from "@/hooks/auth/useAuth";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
   User,
   CreditCard,
@@ -18,30 +24,35 @@ import {
   Loader2,
   Save,
   X,
-  Trash2
-} from 'lucide-react';
-import { useState, useRef, ChangeEvent, useEffect } from 'react';
-import { updateUserProfile, UpdateProfileDTO } from '@/api/services/UserService';
-import { Input } from '@/components/ui/input';
+  Trash2,
+} from "lucide-react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
+import {
+  updateUserProfile,
+  UpdateProfileDTO,
+} from "@/api/services/UserService";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
 
 export default function ProfilePage() {
-  const DEFAULT_BANNER = "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
+  const DEFAULT_BANNER =
+    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
   const { user, logout, syncUser, setUser } = useAuth() as any;
 
   const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({
-    nombre: '',
-    telefono: '',
-    email: ''
+    nombre: "",
+    telefono: "",
+    email: "",
   });
 
   useEffect(() => {
     if (user) {
       setFormData({
-        nombre: user.nombre || '',
-        telefono: user.telefono || '',
-        email: user.email || ''
+        nombre: user.nombre || "",
+        telefono: user.telefono || "",
+        email: user.email || "",
       });
       if (user.banner_url) {
         setBannerUrl(user.banner_url);
@@ -65,39 +76,45 @@ export default function ProfilePage() {
         const img = new Image();
         img.src = event.target?.result as string;
         img.onload = () => {
-          const canvas = document.createElement('canvas');
+          const canvas = document.createElement("canvas");
           const MAX_WIDTH = 800;
           const scaleSize = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH;
           canvas.height = img.height * scaleSize;
 
-          const ctx = canvas.getContext('2d');
+          const ctx = canvas.getContext("2d");
           ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
           resolve(dataUrl);
         };
       };
       reader.onerror = (error) => reject(error);
     });
   };
-  const handleDeleteImage = async (type: 'banner' | 'avatar') => {
-    if (!confirm(`¿Estás seguro de que quieres eliminar ${type === 'banner' ? 'el banner' : 'la foto de perfil'}?`)) return;
+  const handleDeleteImage = async (type: "banner" | "avatar") => {
+    if (
+      !confirm(
+        `¿Estás seguro de que quieres eliminar ${
+          type === "banner" ? "el banner" : "la foto de perfil"
+        }?`
+      )
+    )
+      return;
 
     try {
       setIsUploading(true);
       const updateData: UpdateProfileDTO = {
-        [type === 'banner' ? 'banner_url' : 'avatar_url']: ""
+        [type === "banner" ? "banner_url" : "avatar_url"]: "",
       };
 
       const updatedUser = await updateUserProfile(updateData);
 
       if (setUser) setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      if (type === 'banner') {
+      if (type === "banner") {
         setBannerUrl(DEFAULT_BANNER);
       }
-
     } catch (error) {
       console.error("Error eliminando imagen:", error);
       alert("No se pudo eliminar la imagen.");
@@ -105,7 +122,10 @@ export default function ProfilePage() {
       setIsUploading(false);
     }
   };
-  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>, type: 'banner' | 'avatar') => {
+  const handleImageUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+    type: "banner" | "avatar"
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -114,23 +134,22 @@ export default function ProfilePage() {
       const base64Image = await convertToBase64(file);
 
       const updateData: UpdateProfileDTO = {
-        [type === 'banner' ? 'banner_url' : 'avatar_url']: base64Image
+        [type === "banner" ? "banner_url" : "avatar_url"]: base64Image,
       };
 
       const updatedUser = await updateUserProfile(updateData);
 
       if (setUser) setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
 
-      if (type === 'banner') {
+      if (type === "banner") {
         setBannerUrl(base64Image);
       }
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token && syncUser) {
         await syncUser(token);
       }
-
     } catch (error) {
       console.error("Error al subir imagen:", error);
       alert("Hubo un error al guardar la imagen.");
@@ -147,18 +166,17 @@ export default function ProfilePage() {
         nombre: formData.nombre,
         telefono: formData.telefono,
 
-        email: formData.email
+        email: formData.email,
       };
 
       await updateUserProfile(updateData);
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (token && syncUser) {
         await syncUser(token);
       }
 
       setIsEditing(false);
-
     } catch (error) {
       console.error("Error guardando perfil:", error);
       alert("No se pudo actualizar la información del perfil.");
@@ -170,7 +188,6 @@ export default function ProfilePage() {
   return (
     <div className="max-w-5xl mx-auto pb-10 bg-background min-h-screen">
       <div className="relative mb-24 md:mb-20">
-
         <div className="h-48 md:h-64 w-full rounded-xl overflow-hidden bg-muted relative group">
           <img
             src={bannerUrl}
@@ -183,7 +200,7 @@ export default function ProfilePage() {
             ref={bannerInputRef}
             className="hidden"
             accept="image/*"
-            onChange={(e) => handleImageUpload(e, 'banner')}
+            onChange={(e) => handleImageUpload(e, "banner")}
             disabled={isUploading}
           />
           {bannerUrl !== DEFAULT_BANNER && (
@@ -191,7 +208,7 @@ export default function ProfilePage() {
               variant="destructive"
               size="sm"
               className="absolute top-4 right-52 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 cursor-pointer shadow-md"
-              onClick={() => handleDeleteImage('banner')}
+              onClick={() => handleDeleteImage("banner")}
               disabled={isUploading}
             >
               <Trash2 className="w-4 h-4 mr-2" />
@@ -205,14 +222,22 @@ export default function ProfilePage() {
             onClick={() => bannerInputRef.current?.click()}
             disabled={isUploading}
           >
-            {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Camera className="w-4 h-4 mr-2" />}
-            {isUploading ? 'Subiendo...' : 'Cambiar Banner'}
+            {isUploading ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Camera className="w-4 h-4 mr-2" />
+            )}
+            {isUploading ? "Subiendo..." : "Cambiar Banner"}
           </Button>
         </div>
         <div className="absolute -bottom-16 left-0 right-0 flex flex-col items-center px-4">
           <div className="relative group mb-3">
             <Avatar className="w-32 h-32 border-4 border-background shadow-xl bg-card">
-              <AvatarImage src={user?.avatar_url || ""} alt={user?.nombre} className="object-cover" />
+              <AvatarImage
+                src={user?.avatar_url || ""}
+                alt={user?.nombre}
+                className="object-cover"
+              />
               <AvatarFallback className="text-4xl bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-400 font-bold">
                 {user?.nombre?.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -222,7 +247,7 @@ export default function ProfilePage() {
               ref={avatarInputRef}
               className="hidden"
               accept="image/*"
-              onChange={(e) => handleImageUpload(e, 'avatar')}
+              onChange={(e) => handleImageUpload(e, "avatar")}
               disabled={isUploading}
             />
             {user?.avatar_url && (
@@ -230,7 +255,7 @@ export default function ProfilePage() {
                 size="icon"
                 variant="destructive"
                 className="absolute bottom-1 right-15 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 border border-border cursor-pointer"
-                onClick={() => handleDeleteImage('avatar')}
+                onClick={() => handleDeleteImage("avatar")}
                 disabled={isUploading}
                 title="Eliminar foto"
               >
@@ -244,22 +269,37 @@ export default function ProfilePage() {
               onClick={() => avatarInputRef.current?.click()}
               disabled={isUploading}
             >
-              {isUploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <Camera className="w-4 h-4 text-muted-foreground" />}
+              {isUploading ? (
+                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+              ) : (
+                <Camera className="w-4 h-4 text-muted-foreground" />
+              )}
             </Button>
           </div>
 
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground">{user?.nombre}</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              {user?.nombre}
+            </h1>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50">
-                {user?.rol || 'Cliente'}
+              <Badge
+                variant="secondary"
+                className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50"
+              >
+                {user?.rol || "Cliente"}
               </Badge>
               {isBCPUser && (
-                <Badge variant="outline" className="border-orange-500 text-orange-600 bg-orange-50 dark:bg-orange-900/20">
+                <Badge
+                  variant="outline"
+                  className="border-orange-500 text-orange-600 bg-orange-50 dark:bg-orange-900/20"
+                >
                   Cliente BCP
                 </Badge>
               )}
-              <Badge variant="outline" className="border-orange-200 text-orange-600 dark:border-orange-800 dark:text-orange-400">
+              <Badge
+                variant="outline"
+                className="border-orange-200 text-orange-600 dark:border-orange-800 dark:text-orange-400"
+              >
                 Nivel Oro
               </Badge>
             </div>
@@ -268,7 +308,6 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-12">
-
         <Card className="lg:col-span-2 bg-card border-border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -281,16 +320,35 @@ export default function ProfilePage() {
               </CardDescription>
             </div>
             {!isEditing ? (
-              <Button variant="outline" onClick={() => setIsEditing(true)} className="border-border text-foreground hover:bg-accent">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditing(true)}
+                className="border-border text-foreground hover:bg-accent"
+              >
                 Editar
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setIsEditing(false)} disabled={isSaving} className="text-muted-foreground">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                  className="text-muted-foreground"
+                >
                   <X className="w-4 h-4 mr-1" /> Cancelar
                 </Button>
-                <Button size="sm" onClick={handleSaveProfile} disabled={isSaving} className="bg-orange-500 hover:bg-orange-600 text-white">
-                  {isSaving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
+                <Button
+                  size="sm"
+                  onClick={handleSaveProfile}
+                  disabled={isSaving}
+                  className="bg-orange-500 hover:bg-orange-600 text-white"
+                >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-1" />
+                  )}
                   Guardar
                 </Button>
               </div>
@@ -304,7 +362,9 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <Input
                     value={formData.nombre}
-                    onChange={(e: any) => setFormData({ ...formData, nombre: e.target.value })}
+                    onChange={(e: any) =>
+                      setFormData({ ...formData, nombre: e.target.value })
+                    }
                     className="bg-background border-input text-foreground"
                   />
                 ) : (
@@ -317,8 +377,10 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label className="text-muted-foreground">DNI / Documento</Label>
                 <div className="p-3 bg-muted/30 rounded-md border border-border/50 text-muted-foreground">
-                  {user?.dni || 'No registrado'}
-                  <span className="float-right text-xs italic opacity-70">(No editable)</span>
+                  {user?.dni || "No registrado"}
+                  <span className="float-right text-xs italic opacity-70">
+                    (No editable)
+                  </span>
                 </div>
               </div>
 
@@ -330,13 +392,19 @@ export default function ProfilePage() {
                 {isEditing && !isBCPUser ? ( // Solo editable si NO es BCP
                   <Input
                     value={formData.email}
-                    onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e: any) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="bg-background border-input text-foreground"
                   />
                 ) : (
                   <div className="p-3 bg-muted/50 rounded-md border border-border text-foreground">
                     {user?.email}
-                    {isEditing && isBCPUser && <span className="float-right text-xs text-orange-500">(Gestionado por Banco)</span>}
+                    {isEditing && isBCPUser && (
+                      <span className="float-right text-xs text-orange-500">
+                        (Gestionado por Banco)
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -349,13 +417,15 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <Input
                     value={formData.telefono}
-                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, telefono: e.target.value })
+                    }
                     className="bg-background border-input text-foreground"
                     placeholder="+51..."
                   />
                 ) : (
                   <div className="p-3 bg-muted/50 rounded-md border border-border text-foreground">
-                    {user?.telefono || 'No registrado'}
+                    {user?.telefono || "No registrado"}
                   </div>
                 )}
               </div>
@@ -365,7 +435,7 @@ export default function ProfilePage() {
 
         {/* COLUMNA DERECHA: Acciones */}
         <div className="space-y-6">
-          {/* TARJETA FINANZAS */}
+          {/* TARJETA FINANZAS (Simplificada) */}
           <Card className="bg-card border-border shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg flex items-center text-foreground">
@@ -374,21 +444,18 @@ export default function ProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-accent">
-                <Building2 className="w-4 h-4 mr-2 text-muted-foreground" />
-                Gestionar Cuentas
-              </Button>
-              <Button variant="ghost" className="w-full justify-start text-foreground hover:bg-accent">
-                <CreditCard className="w-4 h-4 mr-2 text-muted-foreground" />
-                Ver Tarjetas Asociadas
-              </Button>
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-2 shadow-md hover:shadow-lg transition-all">
-                Transferir Saldo
-              </Button>
+              <Link href="/dashboard/profile/accounts" passHref>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 border-orange-500/50 hover:text-orange-600"
+                >
+                  <Building2 className="w-4 h-4 mr-2 text-orange-500" />
+                  Ver y Gestionar Cuentas
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
-          {/* TARJETA SEGURIDAD */}
           <Card className="bg-card border-border shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg flex items-center text-foreground">
@@ -398,7 +465,10 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {!isBCPUser && (
-                <Button variant="outline" className="w-full justify-start border-border hover:bg-accent text-foreground">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start border-border hover:bg-accent text-foreground"
+                >
                   Cambiar Contraseña
                 </Button>
               )}

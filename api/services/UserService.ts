@@ -1,14 +1,7 @@
 import React from 'react'
 import { api } from '../axiosConfig';
 import { User } from '@/interfaces/User';
-export interface UpdateProfileDTO {
-  nombre?: string;
-  telefono?: string;
-  email?: string;
-  password?: string;
-  avatar_url?: string;
-  banner_url?: string;
-}
+import { UpdateProfileDTO } from '@/interfaces/client/UpdateProfile';
 export const updateUserProfile = async (data: UpdateProfileDTO): Promise<User> => {
   try {
     const response = await api.put('/users/profile', data);

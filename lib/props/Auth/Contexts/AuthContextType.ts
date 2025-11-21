@@ -14,4 +14,5 @@ export interface AuthContextType {
   logout: () => void;
   showWelcomeModal: boolean;
   closeWelcomeModal: () => void;
+  updatePassword:(password:string, newPassword:string) =>Promise<void>;
 }

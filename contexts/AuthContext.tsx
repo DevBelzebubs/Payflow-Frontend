@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { User } from "@/interfaces/User";
 import { Cliente } from "@/interfaces/Cliente";
 import { AuthService } from "@/api/services/AuthService";
-import { AuthContextType } from "@/lib/props/auth/Contexts/AuthContextType";
+import { AuthContextType } from "@/lib/props/Auth/Contexts/AuthContextType";
+import { updateUserProfile } from "@/api/services/UserService";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -117,6 +118,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         router.replace('/');
 
     };
+    const updatePassword = async (password:string, newPassword:string) =>{
+        if(!user) throw new Error("Usuario no autenticado");
+        setLoading(true);
+        if(password.toLowerCase().trim() != ){}
+        try {
+            const updateData = {newPassword};
+            const updatedUser = await updateUserProfile(updateData);
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+        } catch (error:any) {
+            console.error("Error al actualizar contraseña:", error);
+            throw new Error(error.message || 'Error al actualizar la contraseña');
+        }finally{
+            setLoading(false);
+        }
+    }
     return (
         <AuthContext.Provider
             value={{
@@ -132,6 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 logout,
                 showWelcomeModal,
                 closeWelcomeModal: () => setShowWelcomeModal(false),
+                updatePassword
             }}
         >
             {children}
