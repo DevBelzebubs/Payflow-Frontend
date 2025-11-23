@@ -27,6 +27,8 @@ const CheckoutPage = () => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const seatsParam = searchParams.get('seats');
+    const seats = seatsParam ? JSON.parse(seatsParam) : [];
     useEffect(() => {
         if (!serviceId || !accountId) return;
         const loadData = async () => {
@@ -48,7 +50,11 @@ const CheckoutPage = () => {
         try {
             await procesarPagoOrden({
                 clienteId: cliente.id,
-                items: [{ servicioId: servicio.idServicio, cantidad: 1 }],
+                items: [{
+                    servicioId: servicio.idServicio,
+                    cantidad: seats.length || 1,
+                    seats: seats
+                }],
                 datosPago: {
                     origen: 'PAYFLOW',
                     cuentaId: cuenta.id,

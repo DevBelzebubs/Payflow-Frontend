@@ -14,6 +14,7 @@ export interface OrdenRequest {
     servicioId?: string;
     productoId?: string;
     cantidad: number;
+    seats?: { row: string; col: number }[];
   }[];
   notas?: string;
   datosPago: {

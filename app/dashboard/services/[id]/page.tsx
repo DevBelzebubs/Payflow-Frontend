@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { StarRating } from '../../products/[id]/StarRating';
+import { TicketType } from '../../components/layout/TicketTypeSelector';
+import { api } from '@/api/axiosConfig';
 
 const serviceTypeInfo = {
   'UTILIDAD': {
@@ -88,6 +90,8 @@ const ServiceDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
+  const [selectedTicketTypeId, setSelectedTicketTypeId] = useState<string | null>(null);
   useEffect(() => {
     if (id) {
       const fetchService = async () => {
@@ -95,6 +99,14 @@ const ServiceDetailPage = () => {
           setIsLoading(true); setError(null);
           const data = await getServicioById(id);
           setServicio(data);
+          if (data.tipo_servicio === 'EVENTO') {
+            try {
+                const typesRes = await api.get(`/servicios/${id}/tipos-entrada`);
+                setTicketTypes(typesRes.data || []);
+            } catch (err) {
+                console.warn("Error cargando tipos de entrada");
+            }
+        }
         } catch (err) {
           setError('Servicio no encontrado o no disponible.');
         } finally {
@@ -104,10 +116,6 @@ const ServiceDetailPage = () => {
       fetchService();
     }
   }, [id]);
-
-  const handlePayment = () => {
-    alert(`Iniciando pago por: ${servicio?.nombre} - $${servicio?.recibo.toFixed(2)}`);
-  };
 
   if (isLoading) {
     return (
