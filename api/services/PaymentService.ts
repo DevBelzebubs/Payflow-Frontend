@@ -18,8 +18,8 @@ export interface OrdenRequest {
   }[];
   notas?: string;
   datosPago: {
-    origen: "PAYFLOW" | "BCP";
-    cuentaId: string;
+    origen: "PAYFLOW" | "BCP" | "MERCADOPAGO";
+    cuentaId?: string;
     monto?: number;
   };
 }
