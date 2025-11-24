@@ -2,15 +2,28 @@
 import { getMisOrdenes } from '@/api/services/PaymentService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/auth/useAuth';
+import useCart from '@/hooks/cart/useCart';
 import { Orders } from '@/interfaces/services/Orders';
 import { AlertCircle, HistoryIcon, Loader2, Package, Ticket } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 const HistoryPage = () => {
     const { cliente, loading: authLoading } = useAuth();
+    const { clearCart } = useCart();
+    const searchParams = useSearchParams();
+    const router = useRouter();
     const [ordenes, setOrdenes] = useState<Orders[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    useEffect(()=>{
+        const status = searchParams.get('status');
+        const type = searchParams.get('type');
+        if (status === 'success' && type === 'cart') {
+            clearCart();
+            router.replace('/dashboard/history');
+        }
+    },[searchParams,clearCart,router]);
 
     const loadData = async (clienteId: string) => {
         try {

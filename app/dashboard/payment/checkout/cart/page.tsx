@@ -16,6 +16,7 @@ const CartCheckoutPage = () => {
   const { cliente } = useAuth();
   const { cart, clearCart, itemCount } = useCart();
 
+  const method = searchParams.get('method'); // 'MERCADOPAGO' | 'PAYFLOW'
   const accountId = searchParams.get('accountId');
   const [cuenta, setCuenta] = useState<BankAccount | null>(null);
 
@@ -23,57 +24,90 @@ const CartCheckoutPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
   const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+
   useEffect(() => {
-    if (!accountId) return;
+    // Si el carrito está vacío y no fue éxito, volver.
     if (itemCount === 0 && !success) {
       router.push('/dashboard/products');
       return;
     }
+
+    // Si es pago con cuenta, cargamos la info. Si es MP, solo pasamos.
     const loadData = async () => {
-      try {
-        const acc = await getCuentaById(accountId);
-        setCuenta(acc);
-      } catch (err) {
-        setError("Error cargando datos de la cuenta");
-      } finally {
-        setIsLoading(false);
+      if (method !== 'MERCADOPAGO' && accountId) {
+        try {
+          const acc = await getCuentaById(accountId);
+          setCuenta(acc);
+        } catch (err) {
+          setError("Error cargando datos de la cuenta");
+        }
       }
+      setIsLoading(false);
     };
     loadData();
-  }, [accountId, itemCount, router, success]);
+  }, [accountId, itemCount, router, success, method]);
+
   const handlePay = async () => {
-    if (!cliente || !cuenta || cart.length === 0) return;
+    if (!cliente) return;
+    
+    if (method !== 'MERCADOPAGO' && cuenta && cuenta.saldo < totalCart) {
+        return; 
+    }
+
     setIsProcessing(true)
     try {
       const itemsOrden = cart.map(item => ({
         productoId: item.id,
         cantidad: item.quantity
       }));
-      await procesarPagoOrden({
+
+      const payload: any = {
         clienteId: cliente.id,
         items: itemsOrden,
         datosPago: {
-          origen: 'PAYFLOW',
-          cuentaId: cuenta.id,
-          monto: totalCart
+          origen: method === 'MERCADOPAGO' ? 'MERCADOPAGO' : (cuenta?.origen === 'BCP' ? 'BCP' : 'PAYFLOW'),
+          monto: totalCart,
+          cuentaId: cuenta?.id
         },
         notas: `Compra Web: ${itemCount} productos`
-      });
+      };
+
+      if(payload.datosPago.origen === 'BCP'){
+         payload.datosPago.dniCliente = cliente.dni;
+         payload.datosPago.numeroCuentaOrigen = cuenta?.numeroCuenta;
+      }
+
+      const response = await procesarPagoOrden(payload);
+
+      if (response.urlPago) {
+          window.location.href = response.urlPago;
+          return;
+      }
+
       setSuccess(true);
       clearCart();
       setTimeout(() => router.push('/dashboard/history'), 3000);
+
     } catch (err: any) {
       setError(err.message || 'Error en el pago');
       setIsProcessing(false);
     }
-    if (isLoading) return (
+  }
+
+  const currentBalance = cuenta?.saldo || 0;
+  const newBalance = currentBalance - totalCart;
+  const hasFunds = method === 'MERCADOPAGO' || newBalance >= 0;
+
+  if (isLoading) return (
       <div className="h-96 flex items-center justify-center">
         <Loader2 className="animate-spin text-orange-500 w-8 h-8" />
         <p className="ml-3 text-lg text-muted-foreground">Cargando...</p>
       </div>
-    );
-    if (success) {
+  );
+
+  if (success) {
       return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center animate-fade-in">
           <div className="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-4">
@@ -83,11 +117,8 @@ const CartCheckoutPage = () => {
           <p className="text-muted-foreground mt-2">Tu pedido ha sido generado. Redirigiendo...</p>
         </div>
       );
-    }
   }
-  const currentBalance = cuenta?.saldo || 0;
-  const newBalance = currentBalance - totalCart;
-  const hasFunds = newBalance >= 0;
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-background min-h-screen">
       <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 text-muted-foreground hover:text-foreground hover:bg-accent">
@@ -107,26 +138,41 @@ const CartCheckoutPage = () => {
 
         <CardContent className="p-8">
           <div className="bg-muted dark:bg-muted/50 rounded-xl p-6 mb-8 border border-border">
-            <h3 className="font-semibold text-foreground mb-4 flex items-center">
-              Balance de Cuenta ({cuenta?.banco} •••• {cuenta?.numeroCuenta.slice(-4)})
-            </h3>
+            
+            {method === 'MERCADOPAGO' ? (
+                <h3 className="font-semibold text-foreground mb-4 flex items-center">
+                    Resumen de Pago (Mercado Pago)
+                </h3>
+            ) : (
+                <h3 className="font-semibold text-foreground mb-4 flex items-center">
+                    Balance de Cuenta ({cuenta?.banco} •••• {cuenta?.numeroCuenta.slice(-4)})
+                </h3>
+            )}
 
             <div className="space-y-3">
-              <div className="flex justify-between text-muted-foreground">
-                <span>Saldo Actual</span>
-                <span className="font-medium">S/ {currentBalance.toFixed(2)}</span>
-              </div>
+              {method !== 'MERCADOPAGO' && (
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Saldo Actual</span>
+                    <span className="font-medium">S/ {currentBalance.toFixed(2)}</span>
+                  </div>
+              )}
+              
               <div className="flex justify-between text-destructive">
-                <span>(-) Total Carrito ({itemCount} items)</span>
-                <span className="font-bold">-S/ {totalCart.toFixed(2)}</span>
+                <span>Total Carrito ({itemCount} items)</span>
+                <span className="font-bold text-xl">S/ {totalCart.toFixed(2)}</span>
               </div>
-              <div className="h-px bg-border my-2"></div>
-              <div className="flex justify-between items-center">
-                <span className="font-bold text-foreground text-lg">Nuevo Saldo</span>
-                <span className={cn("text-2xl font-bold", hasFunds ? "text-green-600 dark:text-green-400" : "text-destructive")}>
-                  S/ {newBalance.toFixed(2)}
-                </span>
-              </div>
+
+              {method !== 'MERCADOPAGO' && (
+                  <>
+                    <div className="h-px bg-border my-2"></div>
+                    <div className="flex justify-between items-center">
+                        <span className="font-bold text-foreground text-lg">Nuevo Saldo</span>
+                        <span className={cn("text-2xl font-bold", hasFunds ? "text-green-600 dark:text-green-400" : "text-destructive")}>
+                        S/ {newBalance.toFixed(2)}
+                        </span>
+                    </div>
+                  </>
+              )}
             </div>
           </div>
 
@@ -151,7 +197,9 @@ const CartCheckoutPage = () => {
             {isProcessing ? (
               <><Loader2 className="w-6 h-6 mr-2 animate-spin" /> Procesando...</>
             ) : (
-              `Pagar S/ ${totalCart.toFixed(2)}`
+              method === 'MERCADOPAGO' 
+                ? `Pagar con Mercado Pago`
+                : `Confirmar Pago S/ ${totalCart.toFixed(2)}`
             )}
           </Button>
         </CardContent>
