@@ -6,18 +6,20 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import { LayoutGrid, Package, History } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react'
+import HeroCarousel from './components/layout/HeroCarousel';
+import MercadoPagoBanner from './components/layout/banner/MercadoPagoBanner';
 
 const Dashboard = () => {
   const { user } = useAuth();
   return (
-    <div>
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      <HeroCarousel></HeroCarousel>
       <h1 className="text-3xl font-bold text-foreground mb-2">
         ¡Bienvenido, {user?.nombre}!
       </h1>
       <p className="text-lg text-muted-foreground mb-8">
         Gestiona tus pagos y productos desde un solo lugar.
       </p>
-
       <Card className="bg-card border shadow-sm">
         <CardHeader>
           <CardTitle>Acciones Rápidas</CardTitle>
