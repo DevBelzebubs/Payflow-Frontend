@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { Servicio } from '@/interfaces/services/Service';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, Building2, CheckCircle2, Loader2, Ticket, Wallet, Armchair, CreditCard } from 'lucide-react'; // Añadí Armchair y CreditCard que faltaban
+import { ArrowLeft, ArrowRight, Building2, CheckCircle2, CreditCard, Loader2, Ticket, Wallet, Armchair } from 'lucide-react'; // Asegúrate de importar Armchair
 import { api } from '@/api/axiosConfig';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
@@ -24,11 +24,13 @@ const PaymentSelectionPage = () => {
   const [selectedCuentaId, setSelectedCuentaId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Estados para Cine y Eventos
   const [occupiedSeats, setOccupiedSeats] = useState<{ row: string; col: number }[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<{ row: string; col: number }[]>([]);
   const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
   const [selectedTicketTypeId, setSelectedTicketTypeId] = useState<string | null>(null);
 
+  // Estado para el método de pago ('ACCOUNT' o 'MERCADOPAGO')
   const [paymentMethod, setPaymentMethod] = useState<'ACCOUNT' | 'MERCADOPAGO' | null>(null);
 
   useEffect(() => {
@@ -83,9 +85,12 @@ const PaymentSelectionPage = () => {
   const handleContinue = () => {
     if (!servicio) return;
     
+    // 1. Validación del método de pago
     if (!paymentMethod) return;
+    // Si es cuenta, debe haber ID seleccionado. Si es MP, no importa el ID.
     if (paymentMethod === 'ACCOUNT' && !selectedCuentaId) return;
 
+    // 2. Validaciones específicas del servicio
     if (servicio.tipo_servicio === 'CINE' && selectedSeats.length === 0) {
         alert("Por favor selecciona al menos una butaca para continuar.");
         return;
@@ -98,13 +103,16 @@ const PaymentSelectionPage = () => {
     const queryParams = new URLSearchParams();
     queryParams.set('serviceId', servicio.idServicio);
 
+    // 3. Configurar parámetros según el método
     if (paymentMethod === 'MERCADOPAGO') {
         queryParams.set('method', 'MERCADOPAGO');
     } else {
-        queryParams.set('method', 'PAYFLOW');
+        // Si es cuenta, pasamos el ID y el método interno
+        queryParams.set('method', 'PAYFLOW'); 
         if (selectedCuentaId) queryParams.set('accountId', selectedCuentaId);
     }
 
+    // 4. Parámetros extra (Butacas/Entradas)
     if (servicio.tipo_servicio === 'CINE') {
         queryParams.set('seats', JSON.stringify(selectedSeats));
     } else if (servicio.tipo_servicio === 'EVENTO') {
@@ -128,7 +136,9 @@ const PaymentSelectionPage = () => {
 
   const totalPagar = calculateTotal();
   
-  const isPaymentSelected = paymentMethod === 'MERCADOPAGO' || (paymentMethod === 'ACCOUNT' && selectedCuentaId);
+  // Lógica para habilitar/deshabilitar el botón
+  const isPaymentValid = paymentMethod === 'MERCADOPAGO' || (paymentMethod === 'ACCOUNT' && selectedCuentaId);
+  
   const isServiceConfigValid = 
     (servicio.tipo_servicio === 'CINE' ? selectedSeats.length > 0 : true) &&
     (servicio.tipo_servicio === 'EVENTO' ? !!selectedTicketTypeId : true);
@@ -146,6 +156,7 @@ const PaymentSelectionPage = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
+        {/* COLUMNA IZQUIERDA: SERVICIO */}
         <div className="space-y-6">
             <Card className="h-fit border-l-4 border-l-orange-500 shadow-md bg-card">
                 <CardHeader className="bg-muted pb-4 dark:bg-muted/50 rounded-t-lg">
@@ -209,18 +220,23 @@ const PaymentSelectionPage = () => {
             )}  
         </div>
 
+        {/* COLUMNA DERECHA: PAGO */}
         <div className="space-y-6">
           <h2 className="text-lg font-semibold flex items-center text-foreground">
             <Wallet className="w-5 h-5 mr-2 text-muted-foreground" /> Selecciona un método de pago
           </h2>
           
           <div className="space-y-3">
+              {/* OPCIÓN MERCADO PAGO */}
               <div 
-                onClick={() => { setPaymentMethod('MERCADOPAGO'); setSelectedCuentaId(null); }}
+                onClick={() => { 
+                    setPaymentMethod('MERCADOPAGO'); 
+                    setSelectedCuentaId(null); // Limpiamos cuenta si elige MP
+                }}
                 className={cn(
                   "p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4",
                   paymentMethod === 'MERCADOPAGO'
-                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-sm"
                     : "border-border bg-card hover:border-blue-200"
                 )}
               >
@@ -229,15 +245,19 @@ const PaymentSelectionPage = () => {
                 </div>
                 <div>
                   <p className="font-bold text-foreground">Mercado Pago</p>
-                  <p className="text-xs text-muted-foreground">Tarjetas de crédito, débito y más</p>
+                  <p className="text-xs text-muted-foreground">Tarjetas, Yape, Efectivo</p>
                 </div>
                 {paymentMethod === 'MERCADOPAGO' && <CheckCircle2 className="w-6 h-6 text-blue-600 ml-auto" />}
               </div>
 
+              {/* LISTADO DE CUENTAS */}
               {cuentas.map((cuenta) => (
                 <div
                   key={cuenta.id}
-                  onClick={() => { setPaymentMethod('ACCOUNT'); setSelectedCuentaId(cuenta.id); }} 
+                  onClick={() => { 
+                      setPaymentMethod('ACCOUNT'); // <--- IMPORTANTE: Actualizamos el método
+                      setSelectedCuentaId(cuenta.id); 
+                  }} 
                   className={cn(
                     "p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between hover:shadow-md",
                     selectedCuentaId === cuenta.id && paymentMethod === 'ACCOUNT'
@@ -274,12 +294,12 @@ const PaymentSelectionPage = () => {
 
           <Button
             className="w-full py-6 text-lg bg-foreground text-background hover:bg-foreground/90 shadow-xl"
-            disabled={!isPaymentSelected || !isServiceConfigValid}
+            disabled={!isPaymentValid || !isServiceConfigValid} 
             onClick={handleContinue}
           >
             {!isServiceConfigValid
               ? "Completa la selección para continuar"
-              : !isPaymentSelected 
+              : !isPaymentValid 
                 ? "Selecciona un método de pago"
                 : <>Continuar al Checkout <ArrowRight className="ml-2 w-5 h-5" /></>
             }
