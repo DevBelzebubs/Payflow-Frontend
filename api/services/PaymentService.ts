@@ -14,6 +14,7 @@ export interface OrdenRequest {
     servicioId?: string;
     productoId?: string;
     cantidad: number;
+    ticketTypeId?:string,
     seats?: { row: string; col: number }[];
   }[];
   notas?: string;
@@ -77,12 +78,28 @@ export const cancelarOrden = async (ordenId: string) => {
     );
   }
 };
-export const getMisOrdenes = async (clienteId: string): Promise<Orders[]> => {
+export const getMisOrdenes = async (clienteId: string, page:number = 1, limit:number = 10): Promise<Orders[]> => {
   try {
-    const response = await api.get<Orders[]>(`/ordenes/cliente/${clienteId}`);
+    const response = await api.get<Orders[]>(`/ordenes/cliente/${clienteId}`,{
+      params:{
+        page,limit
+      }
+    });
     return response.data;
   } catch (error: any) {
     console.error('Error al obtener las órdenes:', error);
     throw new Error(error.response?.data?.error || 'No se pudo cargar el historial.');
+  }
+};
+export const recargarMonedero = async (cuentaOrigenId: string, monto: number) => {
+  try {
+    const response = await api.post("/cuentas-bancarias/recargar", {
+      cuentaOrigenId,
+      monto
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error("Error en recarga:", error);
+    throw new Error(error.response?.data?.error || "Error al procesar la recarga.");
   }
 };

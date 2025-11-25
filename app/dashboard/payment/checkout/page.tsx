@@ -7,10 +7,12 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { Servicio } from '@/interfaces/services/Service';
 import { cn } from '@/lib/utils';
-import { AlertCircle, ArrowLeft, CheckCircle2, Loader2, ShieldCheck } from 'lucide-react';
+import { AlertCircle, ArrowLeft, CheckCircle2, Loader2, ShieldCheck, Ticket } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import { TicketType } from '../../components/layout/TicketTypeSelector';
+import { api } from '@/api/axiosConfig';
 
 const CheckoutPage = () => {
     const searchParams = useSearchParams();
@@ -19,9 +21,12 @@ const CheckoutPage = () => {
 
     const serviceId = searchParams.get('serviceId');
     const accountId = searchParams.get('accountId');
+    const ticketTypeId = searchParams.get('ticketTypeId');
+    const method = searchParams.get('method');
 
     const [servicio, setServicio] = useState<Servicio | null>(null);
     const [cuenta, setCuenta] = useState<BankAccount | null>(null);
+    const [ticketType, setTicketType] = useState<TicketType | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -31,9 +36,20 @@ const CheckoutPage = () => {
         if (!serviceId || !accountId) return;
         const loadData = async () => {
             try {
+                const promises: any[] = [getServicioById(serviceId)];
+                if (accountId && method !== 'MERCADOPAGO') {
+                    promises.push(getCuentaById(accountId));
+                }
                 const [srv, acc] = await Promise.all([getServicioById(serviceId), getCuentaById(accountId)]);
-                setServicio(srv)
+                setServicio(srv);
                 setCuenta(acc);
+                if (ticketTypeId) {
+                    const typesRes = await api.get<TicketType[]>(`/servicios/${serviceId}/tipos-entrada`);
+                    const selected = typesRes.data.find(t => t.id === ticketTypeId);
+                    if (selected) {
+                        setTicketType(selected);
+                    }
+                }
             } catch (err) {
                 setError("Error cargando datos del checkout");
             } finally {
@@ -41,18 +57,22 @@ const CheckoutPage = () => {
             }
         };
         loadData();
-    }, [serviceId, accountId])
+    }, [serviceId, accountId, ticketTypeId, method])
+
     const handlePay = async () => {
-        if (!cliente?.id || !servicio || !cuenta) return;
+        if (!cliente?.id || !servicio) return;
+        if (method !== 'MERCADOPAGO' && cuenta && cuenta.saldo < totalToPay) {
+            return;
+        }
         setIsProcessing(true);
         try {
             await procesarPagoOrden({
                 clienteId: cliente.id,
-                items: [{ servicioId: servicio.idServicio, cantidad: 1 }],
+                items: [{ servicioId: servicio.idServicio, cantidad: 1, ticketTypeId: ticketTypeId || undefined }],
                 datosPago: {
                     origen: 'PAYFLOW',
-                    cuentaId: cuenta.id,
-                    monto: servicio.recibo
+                    cuentaId: cuenta?.id,
+                    monto: totalToPay
                 },
                 notas: `Pago Web: ${servicio.nombre}`
             });
@@ -92,10 +112,13 @@ const CheckoutPage = () => {
         );
     }
 
+    const basePrice = ticketType ? ticketType.precio : (servicio?.recibo || 0);
     const currentBalance = cuenta?.saldo || 0;
-    const cost = servicio?.recibo || 0;
-    const newBalance = currentBalance - cost;
-    const hasFunds = newBalance >= 0;
+    const isPayflowWallet = cuenta?.banco.toLowerCase().includes("monedero payflow") && cuenta?.tipoCuenta === "ahorro";
+    const discountMultiplier = isPayflowWallet ? 0.80 : 1;
+    const totalToPay = basePrice * discountMultiplier;
+    const newBalance = currentBalance - totalToPay;
+    const hasFunds = method === 'MERCADOPAGO' || newBalance >= 0;
     return (
         <div className="max-w-3xl mx-auto p-6 bg-background min-h-screen">
             <Button variant="ghost" onClick={() => router.back()} className="mb-6 pl-0 text-muted-foreground hover:text-foreground hover:bg-accent">
@@ -103,63 +126,77 @@ const CheckoutPage = () => {
             </Button>
 
             <Card className="shadow-xl overflow-hidden bg-card border border-border">
-                <CardHeader className="bg-gray-900 text-white p-8">
+                <CardHeader className="bg-primary text-primary-foreground p-8">
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-orange-400 font-medium text-sm mb-1 uppercase tracking-wide">Confirmar Transacción</p>
                             <CardTitle className="text-3xl">{servicio?.nombre}</CardTitle>
+                            {ticketType && (
+                                <div className="flex items-center mt-2 text-primary-foreground/80">
+                                    <Ticket className="w-4 h-4 mr-2" />
+                                    <span className="font-medium text-lg">{ticketType.nombre}</span>
+                                </div>
+                            )}
                         </div>
                         <ShieldCheck className="w-12 h-12 text-primary-foreground/70" />
                     </div>
                 </CardHeader>
-
                 <CardContent className="p-8">
                     <div className="bg-muted dark:bg-muted/50 rounded-xl p-6 mb-8 border border-border">
                         <h3 className="font-semibold text-foreground mb-4 flex items-center">
-                            Detalle de Saldos ({cuenta?.banco} •••• {cuenta?.numeroCuenta.slice(-4)})
+                            {method === 'MERCADOPAGO' ? 'Resumen de Pago' : `Balance de Cuenta (${cuenta?.banco} •••• ${cuenta?.numeroCuenta.slice(-4)})`}
                         </h3>
-
                         <div className="space-y-3">
-                            <div className="flex justify-between text-muted-foreground">
-                                <span>Saldo Actual</span>
-                                <span className="font-medium">S/ {currentBalance.toFixed(2)}</span>
-                            </div>
-                            <div className="flex justify-between text-destructive">
-                                <span>(-) Costo del Servicio</span>
-                                <span className="font-bold">-S/ {cost.toFixed(2)}</span>
+                            {method !== 'MERCADOPAGO' && (
+                                <div className="flex justify-between text-muted-foreground">
+                                    <span>Saldo Actual</span>
+                                    <span className="font-medium">S/ {currentBalance.toFixed(2)}</span>
+                                </div>
+                            )}
+                            {isPayflowWallet && (
+                                <div className="flex justify-between text-green-600 font-medium p-2 bg-green-50 dark:bg-green-900/10 rounded-md">
+                                    <span>Descuento PayFlow (20%)</span>
+                                    <span className="font-bold">-S/ {(basePrice * 0.20).toFixed(2)}</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between text-foreground text-lg">
+                                <span>Precio {ticketType ? 'Entrada' : 'Servicio'}</span>
+                                <span>S/ {basePrice.toFixed(2)}</span>
                             </div>
                             <div className="h-px bg-border my-2"></div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-bold text-foreground text-lg">Nuevo Saldo</span>
-                                <span className={cn("text-2xl font-bold", hasFunds ? "text-green-600 dark:text-green-400" : "text-destructive")}>
-                                    S/ {newBalance.toFixed(2)}
-                                </span>
+                            <div className="flex justify-between items-center text-xl">
+                                <span className="font-bold text-foreground">Total a Pagar</span>
+                                <span className="font-bold text-orange-600">S/ {totalToPay.toFixed(2)}</span>
                             </div>
+                            {method !== 'MERCADOPAGO' && (
+                                <div className="flex justify-between items-center pt-2">
+                                    <span className="text-sm text-muted-foreground">Saldo Restante</span>
+                                    <span className={cn("font-bold", hasFunds ? "text-green-600" : "text-destructive")}>
+                                        S/ {newBalance.toFixed(2)}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
-
                     {!hasFunds && (
                         <div className="bg-destructive/10 text-destructive p-4 rounded-lg mb-6 flex items-center">
                             <AlertCircle className="w-5 h-5 mr-2" />
                             Saldo insuficiente para realizar esta operación.
                         </div>
                     )}
-
                     {error && (
                         <div className="bg-destructive/10 text-destructive p-4 rounded-lg mb-6 text-center text-sm">
                             {error}
                         </div>
                     )}
-
                     <Button
                         className="w-full py-8 text-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg text-white"
                         disabled={!hasFunds || isProcessing}
-                        onClick={handlePay}
-                    >
+                        onClick={handlePay}>
                         {isProcessing ? (
                             <><Loader2 className="w-6 h-6 mr-2 animate-spin" /> Procesando...</>
                         ) : (
-                            "Confirmar Pago"
+                            `Confirmar Pago S/ ${totalToPay.toFixed(2)}`
                         )}
                     </Button>
                 </CardContent>

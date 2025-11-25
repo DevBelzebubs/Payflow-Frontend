@@ -5,7 +5,7 @@ export interface UpdateProfileDTO {
   telefono?: string;
   email?: string;
   password?: string;
-  newPassword:string;
+  newPassword?:string;
   avatar_url?: string;
   banner_url?: string;
 }

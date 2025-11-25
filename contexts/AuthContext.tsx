@@ -118,18 +118,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         router.replace('/');
 
     };
-    const updatePassword = async (password:string, newPassword:string) =>{
+    const updatePassword = async (currentPassword: string, newPassword:string) =>{
         if(!user) throw new Error("Usuario no autenticado");
         setLoading(true);
-        // if(password.toLowerCase().trim() != ){}
         try {
-            const updateData = {newPassword};
-            const updatedUser = await updateUserProfile(updateData);
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
+            await AuthService.login(user.email,currentPassword);
+            const updateData = {password:newPassword,usuarioId:user.id};
+            const updateUser = await updateUserProfile(updateData as any)
+            setUser(updateUser);
+            localStorage.setItem('user', JSON.stringify(updateUser));
         } catch (error:any) {
-            console.error("Error al actualizar contraseña:", error);
-            throw new Error(error.message || 'Error al actualizar la contraseña');
+            if (error.message === 'Email o contraseña incorrectos.' || error.response?.status === 401) {
+             throw new Error('La contraseña actual es incorrecta.');
+        }
+        throw new Error(error.message || 'Error al actualizar la contraseña');
         }finally{
             setLoading(false);
         }
@@ -149,7 +151,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 logout,
                 showWelcomeModal,
                 closeWelcomeModal: () => setShowWelcomeModal(false),
-                updatePassword
+                updatePassword,
+                syncUser
             }}
         >
             {children}

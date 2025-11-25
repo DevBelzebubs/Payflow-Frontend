@@ -15,4 +15,5 @@ export interface AuthContextType {
   showWelcomeModal: boolean;
   closeWelcomeModal: () => void;
   updatePassword:(password:string, newPassword:string) =>Promise<void>;
+  syncUser: (userId: string) => void;
 }

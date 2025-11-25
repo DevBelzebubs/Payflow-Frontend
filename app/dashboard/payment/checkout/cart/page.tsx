@@ -28,13 +28,11 @@ const CartCheckoutPage = () => {
   const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
 
   useEffect(() => {
-    // Si el carrito está vacío y no fue éxito, volver.
     if (itemCount === 0 && !success) {
       router.push('/dashboard/products');
       return;
     }
 
-    // Si es pago con cuenta, cargamos la info. Si es MP, solo pasamos.
     const loadData = async () => {
       if (method !== 'MERCADOPAGO' && accountId) {
         try {

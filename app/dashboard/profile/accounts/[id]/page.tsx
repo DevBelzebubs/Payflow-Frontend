@@ -1,10 +1,11 @@
 "use client";
 import { getCuentaById } from "@/api/services/PaymentService";
+import TopUpModal from "@/app/dashboard/components/layout/TopUpModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BankAccount } from "@/interfaces/BankAccounts/BankAccount";
 import { cn } from "@/lib/utils";
-import { AlertCircle, ArrowLeft, Building2, CreditCard, DollarSign, Loader2, Zap } from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowRightLeft, Building2, CreditCard, DollarSign, Loader2, Zap } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -15,6 +16,7 @@ const AccountDetail = () => {
   const [account, setAccount] = useState<BankAccount | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTopUpOpen, setIsTopUpOpen] = useState(false);
   useEffect(() => {
     if (!id) {
       setIsLoading(false);
@@ -37,6 +39,8 @@ const AccountDetail = () => {
       fetchAccount();
     }
   }, [id]);
+  const SourceIcon = account?.origen === "BCP" ? CreditCard : Zap;
+  const isWallet = account?.banco.toLowerCase().includes("monedero payflow");
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -54,7 +58,6 @@ const AccountDetail = () => {
       </div>
     );
   }
-    const SourceIcon = account?.origen === "BCP" ? CreditCard : Zap;
   return (
   <div className="max-w-4xl mx-auto space-y-8">
       <Button variant="ghost" onClick={() => router.back()} className="pl-0 text-muted-foreground hover:text-foreground hover:bg-accent">
@@ -115,14 +118,24 @@ const AccountDetail = () => {
           <CardTitle className="text-xl">Acciones de Cuenta</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white shadow-md py-6 text-lg">
-            Transferir Saldo (En la cuenta {account?.banco})
+          <Button 
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white shadow-md py-6 text-lg group"
+            onClick={() => setIsTopUpOpen(true)}
+            disabled={isWallet}
+          >
+            <ArrowRightLeft className="w-5 h-5 mr-2 group-hover:rotate-180 transition-transform" />
+            {isWallet ? "Esta cuenta es tu Monedero" : "Transferir Saldo a mi Monedero Payflow"}
           </Button>
           <Button variant="outline" className="w-full justify-center border-border hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 hover:text-red-700">
             Eliminar Cuenta
           </Button>
         </CardContent>
       </Card>
+      <TopUpModal 
+        isOpen={isTopUpOpen} 
+        onClose={() => setIsTopUpOpen(false)} 
+        account={account} 
+      />
     </div>
     );
 };

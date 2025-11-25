@@ -29,16 +29,17 @@ import {
 import { useState, useRef, ChangeEvent, useEffect } from "react";
 import {
   updateUserProfile,
-  UpdateProfileDTO,
 } from "@/api/services/UserService";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import ResetPasswordModal from "../components/layout/ResetPasswordModal";
+import { UpdateProfileDTO } from "@/interfaces/client/UpdateProfile";
 
 export default function ProfilePage() {
   const DEFAULT_BANNER =
     "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
   const { user, logout, syncUser, setUser } = useAuth() as any;
-
+const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -147,8 +148,8 @@ export default function ProfilePage() {
       }
 
       const token = localStorage.getItem("token");
-      if (token && syncUser) {
-        await syncUser(token);
+      if (user && user.id && syncUser) {
+        await syncUser(user.id); 
       }
     } catch (error) {
       console.error("Error al subir imagen:", error);
@@ -172,8 +173,8 @@ export default function ProfilePage() {
       await updateUserProfile(updateData);
 
       const token = localStorage.getItem("token");
-      if (token && syncUser) {
-        await syncUser(token);
+      if (user && user.id && syncUser) {
+        await syncUser(user.id);
       }
 
       setIsEditing(false);
@@ -468,6 +469,7 @@ export default function ProfilePage() {
                 <Button
                   variant="outline"
                   className="w-full justify-start border-border hover:bg-accent text-foreground"
+                  onClick={() => setIsPasswordModalOpen(true)}
                 >
                   Cambiar Contraseña
                 </Button>
@@ -484,6 +486,10 @@ export default function ProfilePage() {
           </Card>
         </div>
       </div>
+      <ResetPasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
     </div>
   );
 }

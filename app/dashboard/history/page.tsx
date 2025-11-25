@@ -6,16 +6,33 @@ import useCart from '@/hooks/cart/useCart';
 import { Orders } from '@/interfaces/services/Orders';
 import { AlertCircle, HistoryIcon, Loader2, Package, Ticket } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const HistoryPage = () => {
     const { cliente, loading: authLoading } = useAuth();
     const { clearCart } = useCart();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [ordenes, setOrdenes] = useState<Orders[] | null>(null);
+    const [ordenes, setOrdenes] = useState<Orders[]>([]);
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadingMore,setLoadingMore] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const limit = 10;
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastOrderElementRef = useCallback((node: HTMLDivElement) => {
+        if (loading || loadingMore) return;
+        if (observer.current) observer.current.disconnect();
+        
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+        
+        if (node) observer.current.observe(node);
+    }, [loading, loadingMore, hasMore]);
     useEffect(()=>{
         const status = searchParams.get('status');
         const type = searchParams.get('type');
@@ -23,8 +40,30 @@ const HistoryPage = () => {
             clearCart();
             router.replace('/dashboard/history');
         }
-    },[searchParams,clearCart,router]);
+    },[searchParams, clearCart, router]);
+    useEffect(() => {
+        if (authLoading || !cliente) return;
 
+        const loadData = async () => {
+            try {
+                if (page === 1) setLoading(true);
+                else setLoadingMore(true);
+                const newOrders = await getMisOrdenes(cliente.id, page, limit);
+                setOrdenes(prev => {
+                    return page === 1 ? newOrders : [...prev, ...newOrders];
+                });
+                setHasMore(newOrders.length === limit);
+                setError(null);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+                setLoadingMore(false);
+            }
+        }
+
+        loadData();
+    }, [cliente, authLoading, page]);
     const loadData = async (clienteId: string) => {
         try {
             const data = await getMisOrdenes(clienteId);
@@ -37,12 +76,14 @@ const HistoryPage = () => {
     }
 
     useEffect(() => {
-        if (!authLoading && cliente) {
-            loadData(cliente.id);
+        if (cliente?.id) {
+            setOrdenes([]);
+            setPage(1);
+            setHasMore(true);
         }
-    }, [cliente, authLoading]);
+    }, [cliente?.id]);
 
-    if (loading || authLoading) {
+    if (loading && page === 1) {
         return (
             <div className="flex items-center justify-center h-64">
                 <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
@@ -51,7 +92,7 @@ const HistoryPage = () => {
         );
     }
 
-    if (error) {
+    if (error && page === 1) {
         return (
             <div className="flex flex-col items-center justify-center h-64 bg-destructive/10 border border-destructive/30 rounded-lg p-6">
                 <AlertCircle className="w-12 h-12 text-destructive" />
@@ -126,6 +167,16 @@ const HistoryPage = () => {
                             </CardContent>
                         </Card>
                     ))}
+                    {loadingMore && (
+                        <div className="flex justify-center py-4">
+                            <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
+                        </div>
+                    )}
+                    {!hasMore && ordenes.length > 0 && (
+                        <p className="text-center text-sm text-muted-foreground py-4">
+                            Has llegado al final del historial.
+                        </p>
+                    )}
                 </div>
             )}
         </div>
