@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 import HeroCarousel from './components/layout/HeroCarousel';
-import MercadoPagoBanner from './components/layout/banner/MercadoPagoBanner';
+import MercadoPagoBanner from './components/layout/banner/AnimeBanner';
 
 const Dashboard = () => {
   const { user, cliente } = useAuth();

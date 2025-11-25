@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import MercadoPagoBanner from './banner/MercadoPagoBanner';
+import MercadoPagoBanner, { AnimeBanner } from './banner/AnimeBanner';
 import MegadethBanner from './banner/MegadethBanner';
 
 const HeroCarousel = () => {
@@ -39,7 +39,7 @@ const HeroCarousel = () => {
           className={cn("absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out flex flex-col justify-center", index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
           {slide.type === "custom" ? (
             <>
-              {slide.id === "anime-hero" && <MercadoPagoBanner />}
+              {slide.id === "anime-hero" && <AnimeBanner />}
               {slide.id === "megadeth-hero" && <MegadethBanner />}
             </>
           ) : (
