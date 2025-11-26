@@ -1,39 +1,20 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-
-export const AnimeBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const bannerRef = useRef<HTMLDivElement>(null);
+export const AnimeBanner = ({ active = false }: BannerProps) => {
+  const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      {
-        threshold: 0.3, 
-      }
-    );
-
-    if (bannerRef.current) {
-      observer.observe(bannerRef.current);
+    if (active) {
+      setAnimKey(prev => prev + 1);
     }
-
-    return () => {
-      if (bannerRef.current) {
-        observer.unobserve(bannerRef.current);
-      }
-    };
-  }, []);
+  }, [active]);
 
   return (
     <div
-      ref={bannerRef}
-      className="w-full bg-[#F06424] rounded-[32px] relative overflow-hidden flex flex-col md:flex-row items-center px-8 py-10 md:px-14 md:py-16 shadow-sm min-h-[400px]"
+      className="w-full bg-gradient-to-r from-[#EA864B] to-[#E8651A] rounded-[32px] relative overflow-hidden flex flex-col md:flex-row items-center px-8 py-10 md:px-14 md:py-16 shadow-sm min-h-[400px]"
     >
-      {isVisible && (
-        <>
+      <React.Fragment key={animKey}>
           <div className="flex flex-col items-start space-y-5 z-10 max-w-xl">
             <h2 className="text-3xl md:text-4xl lg:text-[44px] font-medium text-white leading-[1.15] animate-in slide-in-from-left-10 fade-in duration-700 fill-mode-both">
               El pago de tu series de anime ahora con mercado pago!
@@ -56,8 +37,7 @@ export const AnimeBanner = () => {
               className="w-full max-w-[350px] md:max-w-[600px] object-contain object-bottom"
             />
           </div>
-        </>
-      )}
+      </React.Fragment>
     </div>
   );
 };

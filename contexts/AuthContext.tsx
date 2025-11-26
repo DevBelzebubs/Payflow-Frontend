@@ -106,6 +106,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setLoading(false);
         }
     }
+    const loginWithBcp = async (dni:string,password:string) =>{
+        setLoading(true);
+        try {
+            const response = await AuthService.loginWithBcp(dni,password);
+            const {token:newToken,user:loggedUser, isNewUser} = response as any;
+            localStorage.setItem('token',newToken);
+            localStorage.setItem('user',JSON.stringify(loggedUser));
+            api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+            await syncUser(loggedUser.id);
+            setToken(newToken);
+            setUser(loggedUser);
+            setIsAuthenticated(true);
+            if (isNewUser) {
+                setShowWelcomeModal(true);
+            }
+            router.replace('/dashboard');
+        } catch (error:any) {
+            console.error('Error login BCP:', error);
+            setLoading(false);
+            throw new Error(error.response?.data?.error || error.message || 'Credenciales BCP inválidas');
+        }finally{
+            setLoading(false)
+        }
+    }
     const logout = () => {
         setUser(null);
         setToken(null);
@@ -152,7 +176,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 showWelcomeModal,
                 closeWelcomeModal: () => setShowWelcomeModal(false),
                 updatePassword,
-                syncUser
+                syncUser,
+                loginWithBcp
             }}
         >
             {children}

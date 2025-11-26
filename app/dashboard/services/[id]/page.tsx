@@ -149,7 +149,6 @@ const ServiceDetailPage = () => {
 
   return (
     <div>
-
       {youtubeVideoIdForBanner && (
         <div className="w-full h-72 md:h-96 bg-secondary flex flex-col justify-end overflow-hidden relative mb-8 rounded-lg">
           <div

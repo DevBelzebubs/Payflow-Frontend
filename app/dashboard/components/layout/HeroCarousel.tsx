@@ -5,6 +5,8 @@ import { ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import MercadoPagoBanner, { AnimeBanner } from './banner/AnimeBanner';
 import MegadethBanner from './banner/MegadethBanner';
+import NodKraiBanner from './banner/NodKraiBanner';
+import IphoneBanner from './banner/IphoneBanner';
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -15,12 +17,8 @@ const HeroCarousel = () => {
     id: 'megadeth-hero',
     type: 'custom'
   }, {
-    id: 'promo-fast',
-    type: 'standard',
-    title: 'Velocidad Payflow',
-    desc: 'Tus transacciones se procesan en tiempo real. Sin esperas.',
-    bg: 'bg-gradient-to-r from-orange-600 to-red-600',
-    icon: <Zap className="w-12 h-12 text-yellow-300" />
+    id: 'nodkrai-hero',
+    type: 'custom',
   },{
     id:'iphone-hero',
     type: 'custom'
@@ -28,33 +26,30 @@ const HeroCarousel = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 6000);
+    }, 10000);
     return () => clearInterval(interval);
   }, [slides.length])
   return (
     <div className="relative w-full h-[400px] md:h-[350px] rounded-2xl overflow-hidden shadow-2xl mb-8 group">
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={cn("absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out flex flex-col justify-center", index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
-          {slide.type === "custom" ? (
-            <>
-              {slide.id === "anime-hero" && <AnimeBanner />}
-              {slide.id === "megadeth-hero" && <MegadethBanner />}
-            </>
-          ) : (
-            <div className={`w-full h-full flex flex-col items-center justify-center text-center p-8 ${slide.bg}`}>
-              {slide.icon}
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                {slide.title}
-              </h2>
-              <p className="text-xl text-white/90 max-w-2xl">
-                {slide.desc}
-              </p>
-            </div>
-          )}
-        </div>
-      ))}
+      {slides.map((slide, index) => {
+        const isActive = index === currentSlide;
+        return (
+          <div
+            key={slide.id}
+            className={cn("absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out flex flex-col justify-center", isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none")}>
+            {slide.type === "custom" ? (
+              <>
+                {slide.id === "anime-hero" && <AnimeBanner active={isActive} />}
+                {slide.id === "megadeth-hero" && <MegadethBanner active={isActive} />}
+                {slide.id === "nodkrai-hero" && <NodKraiBanner active={isActive}/>}
+                {slide.id === "iphone-hero" && <IphoneBanner active={isActive}/>}
+              </>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        )
+      })}
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-40">
         {slides.map((_, idx) => (

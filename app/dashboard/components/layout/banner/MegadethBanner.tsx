@@ -1,39 +1,20 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-
-export const MegadethBanner = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const bannerRef = useRef<HTMLDivElement>(null);
+export const MegadethBanner = ({ active = false }: BannerProps) => {
+  const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      {
-        threshold: 0.3,
-      }
-    );
-
-    if (bannerRef.current) {
-      observer.observe(bannerRef.current);
+    if (active) {
+      setAnimKey(prev => prev + 1);
     }
-
-    return () => {
-      if (bannerRef.current) {
-        observer.unobserve(bannerRef.current);
-      }
-    };
-  }, []);
+  }, [active]);
 
   return (
     <div
-      ref={bannerRef}
-      className="w-full bg-[#39B5C3] rounded-[32px] relative overflow-hidden flex flex-col md:flex-row items-center px-8 py-10 md:px-12 md:py-0 shadow-sm min-h-[350px] md:min-h-[400px]"
+      className="w-full bg-gradient-to-r from-[#40B6C3] to-[#1C9AA3] rounded-[32px] relative overflow-hidden flex flex-col md:flex-row items-center px-8 py-10 md:px-12 md:py-0 shadow-sm min-h-[350px] md:min-h-[400px]"
     >
-      {isVisible && (
-        <>
+      <React.Fragment key={animKey}>
           <div className="order-2 md:order-1 w-full md:w-1/2 flex items-end justify-center md:justify-start h-full pt-6 md:pt-10 animate-in slide-in-from-left-10 fade-in duration-1000 fill-mode-both">
             <img
               src="/assets/megadeth.svg"
@@ -59,8 +40,7 @@ export const MegadethBanner = () => {
               </Button>
             </div>
           </div>
-        </>
-      )}
+      </React.Fragment>
     </div>
   );
 };

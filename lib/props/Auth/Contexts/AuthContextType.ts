@@ -16,4 +16,5 @@ export interface AuthContextType {
   closeWelcomeModal: () => void;
   updatePassword:(password:string, newPassword:string) =>Promise<void>;
   syncUser: (userId: string) => void;
+  loginWithBcp: (dni: string, pass: string) => Promise<void>;
 }

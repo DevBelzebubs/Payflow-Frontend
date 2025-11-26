@@ -1,6 +1,7 @@
 import { User } from "@/interfaces/User";
 import { api } from "../axiosConfig";
 import { Cliente } from "@/interfaces/Cliente";
+import axios from "axios";
 
 interface AuthResponse {
   user: User;
@@ -82,8 +83,24 @@ const createCliente = async (usuario_id: string): Promise<Cliente> => {
     throw new Error(errorMsg);
   }
 };
+const loginWithBcp = async (dni:string,passwordBcp:string):Promise<AuthResponse> =>{
+  try {
+    const response = await api.post<AuthResponse>("/auth/login", {
+      email: dni, 
+      password: passwordBcp,
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error en el login con BCP:",
+      error.response?.data?.error || error.message
+    );
+    throw new Error(error.response?.data?.error || "Credenciales BCP inválidas");
+  }
+}
 export const AuthService = {
   login,
+  loginWithBcp,
   register,
   getClienteByUsuarioId,
   createCliente,

@@ -1,0 +1,3 @@
+interface BannerProps {
+  active?: boolean;
+}

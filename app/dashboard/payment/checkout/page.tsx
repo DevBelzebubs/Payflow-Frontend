@@ -23,6 +23,9 @@ const CheckoutPage = () => {
     const accountId = searchParams.get('accountId');
     const ticketTypeId = searchParams.get('ticketTypeId');
     const method = searchParams.get('method');
+    const seatsParam = searchParams.get('seats');
+    const selectedSeats = seatsParam ? JSON.parse(seatsParam) : [];
+    const seatCount = selectedSeats.length > 0 ? selectedSeats.length : 1;
 
     const [servicio, setServicio] = useState<Servicio | null>(null);
     const [cuenta, setCuenta] = useState<BankAccount | null>(null);
@@ -68,13 +71,18 @@ const CheckoutPage = () => {
         try {
             await procesarPagoOrden({
                 clienteId: cliente.id,
-                items: [{ servicioId: servicio.idServicio, cantidad: 1, ticketTypeId: ticketTypeId || undefined }],
+                items: [{
+                    servicioId: servicio.idServicio,
+                    cantidad: 1,
+                    ticketTypeId: ticketTypeId || undefined,
+                    seats: selectedSeats.length > 0 ? selectedSeats : undefined
+                }],
                 datosPago: {
                     origen: 'PAYFLOW',
                     cuentaId: cuenta?.id,
                     monto: totalToPay
                 },
-                notas: `Pago Web: ${servicio.nombre}`
+                notas: `Pago Web: ${servicio.nombre} (${seatCount} entradas)`
             });
             setSuccess(true);
             setTimeout(() => router.push('/dashboard/history'), 3000);
@@ -116,7 +124,7 @@ const CheckoutPage = () => {
     const currentBalance = cuenta?.saldo || 0;
     const isPayflowWallet = cuenta?.banco.toLowerCase().includes("monedero payflow") && cuenta?.tipoCuenta === "ahorro";
     const discountMultiplier = isPayflowWallet ? 0.80 : 1;
-    const totalToPay = basePrice * discountMultiplier;
+    const totalToPay = (basePrice * seatCount) * discountMultiplier;
     const newBalance = currentBalance - totalToPay;
     const hasFunds = method === 'MERCADOPAGO' || newBalance >= 0;
     return (
@@ -160,7 +168,7 @@ const CheckoutPage = () => {
                                 </div>
                             )}
                             <div className="flex justify-between text-foreground text-lg">
-                                <span>Precio {ticketType ? 'Entrada' : 'Servicio'}</span>
+                                <span>Precio {basePrice ? 'Entrada' : 'Servicio'} (Unidad)</span>
                                 <span>S/ {basePrice.toFixed(2)}</span>
                             </div>
                             <div className="h-px bg-border my-2"></div>
