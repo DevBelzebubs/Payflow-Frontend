@@ -17,7 +17,7 @@ export const AnimeBanner = ({ active = false }: BannerProps) => {
       <React.Fragment key={animKey}>
           <div className="flex flex-col items-start space-y-5 z-10 max-w-xl">
             <h2 className="text-3xl md:text-4xl lg:text-[44px] font-medium text-white leading-[1.15] animate-in slide-in-from-left-10 fade-in duration-700 fill-mode-both">
-              El pago de tu series de anime ahora con mercado pago!
+              El pago de tus series de anime ahora con mercado pago!
             </h2>
 
             <p className="text-white text-xl font-medium opacity-95 animate-in slide-in-from-left-10 fade-in duration-700 delay-200 fill-mode-both">

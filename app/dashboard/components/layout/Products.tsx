@@ -105,7 +105,7 @@ const Productos = () => {
                   <div className="text-right mt-auto">
                     <p className="text-xs text-muted-foreground">Precio</p>
                     <p className="text-xl font-bold text-foreground mb-3">
-                      ${producto.precio.toFixed(2)}
+                      S./{producto.precio.toFixed(2)}
                     </p>
                     <Button
                       className="w-full bg-orange-500 hover:bg-orange-600"

@@ -173,7 +173,7 @@ const Services = () => {
                         {servicio.tipo_servicio === 'SUSCRIPCION' ? 'Monto Mensual' : 'Monto a Pagar'}
                       </p>
                       <p className="text-2xl font-bold text-foreground mb-4">
-                        ${servicio.recibo.toFixed(2)}
+                        S./{servicio.recibo.toFixed(2)}
                       </p>
                       <Button className="w-full bg-orange-500 hover:bg-orange-600">
                         Pagar Ahora
