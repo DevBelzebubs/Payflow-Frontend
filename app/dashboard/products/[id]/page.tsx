@@ -79,9 +79,7 @@ const ProductDetailPage = () => {
           </Link>
         </Button>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
-
         <div className="lg:col-span-3">
           <ProductGallery principal={producto.imagen_url} imagenes={producto.imagenes} />
         </div>
