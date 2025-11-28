@@ -14,12 +14,14 @@ import {
   LogOut,
   ShoppingCart,
   X,
-  UserRoundPen
+  UserRoundPen,
+  Repeat
 } from "lucide-react";
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/dashboard/services", label: "Servicios", icon: LayoutGrid },
   { href: "/dashboard/products", label: "Productos", icon: Package },
+  { href: "/dashboard/subscriptions", label: "Suscripciones", icon: Repeat },
   { href: "/dashboard/history", label: "Historial", icon: History },
   { href: "/dashboard/config", label: "Configuración", icon: Settings },
   { href: "/dashboard/profile", label: "Perfil", icon: UserRoundPen },

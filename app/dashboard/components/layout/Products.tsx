@@ -11,7 +11,11 @@ import {
   Search, 
   ShoppingCart, 
   Check,
-  FilterX
+  FilterX,
+  ChevronsRight,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
@@ -26,6 +30,8 @@ const Productos = () => {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const { addToCart } = useCart();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -42,11 +48,20 @@ const Productos = () => {
     };
     cargarProductos();
   }, []);
-
+  useEffect(()=>{
+    setCurrentPage(1);
+  },[search])
   const productosFiltrados = productos.filter((p) =>
     p.nombre.toLowerCase().includes(search.toLowerCase())
   );
-
+  const totalPages = Math.ceil(productosFiltrados.length/itemsPerPage);
+  const startIndex = (currentPage-1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const productosVisibles = productosFiltrados.slice(startIndex,endIndex);
+  const handlePageChange = (page:number) =>{
+    setCurrentPage(page);
+    window.scrollTo({top:0, behavior:'smooth'})
+  }
   const handleAddToCart = (e: React.MouseEvent, producto: Producto) => {
     e.preventDefault();
     e.stopPropagation();
@@ -92,9 +107,7 @@ const Productos = () => {
     <div className="space-y-8 animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border/50 pb-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">
-            Catálogo de Productos
-          </h1>
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">Catálogo de Productos</h1>
           <p className="text-muted-foreground mt-1">Explora nuestra selección exclusiva</p>
         </div>
         
@@ -123,103 +136,152 @@ const Productos = () => {
             Intenta ajustar tu búsqueda o explora otras categorías.
           </p>
           {search && (
-            <Button 
-              variant="link" 
-              className="text-orange-600 mt-2"
-              onClick={() => setSearch("")}
-            >
+            <Button variant="link" className="text-orange-600 mt-2" onClick={() => setSearch("")}>
               Limpiar búsqueda
             </Button>
           )}
         </div>
       ) : (
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-        >
-          <AnimatePresence>
-            {productosFiltrados.map((producto, index) => (
-              <motion.div
-                key={producto.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <Link href={`/dashboard/products/${producto.id}`} className="block h-full group">
-                  <Card className="h-full flex flex-col overflow-hidden border-border/60 hover:border-orange-500/50 hover:shadow-lg transition-all duration-300 bg-card">
-                    
-                    <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden bg-secondary/30">
-                      {producto.stock < 5 && (
-                        <Badge variant="destructive" className="absolute top-3 right-3 z-10 shadow-sm">
-                          ¡Últimas unidades!
-                        </Badge>
-                      )}
+        <>
+          <motion.div 
+            layout
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {productosVisibles.map((producto, index) => (
+                <motion.div
+                  key={producto.id}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                  <Link href={`/dashboard/products/${producto.id}`} className="block h-full group">
+                    <Card className="h-full flex flex-col overflow-hidden border-border/60 hover:border-orange-500/50 hover:shadow-lg transition-all duration-300 bg-card">
                       
-                      {producto.imagen_url ? (
-                        <Image
-                          src={producto.imagen_url}
-                          alt={producto.nombre}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
-                          <Package className="w-16 h-16" />
-                        </div>
-                      )}
-                      
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
-                    </CardHeader>
-
-                    <CardContent className="flex-grow p-5">
-                      <div className="flex justify-between items-start gap-2 mb-2">
-                        <CardTitle className="text-lg font-bold leading-tight line-clamp-1 group-hover:text-orange-600 transition-colors">
-                          {producto.nombre}
-                        </CardTitle>
-                      </div>
-                      
-                      <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
-                        {producto.descripcion || 'Sin descripción disponible para este producto.'}
-                      </p>
-                      
-                      <div className="mt-4 flex items-center gap-2">
-                        <Badge variant="secondary" className="font-normal bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100">
-                          Stock: {producto.stock}
-                        </Badge>
-                        {producto.marca && (
-                          <Badge variant="outline" className="font-normal text-muted-foreground">
-                            {producto.marca}
+                      <CardHeader className="p-0 relative aspect-[4/3] overflow-hidden bg-secondary/30">
+                        {producto.stock < 5 && (
+                          <Badge variant="destructive" className="absolute top-3 right-3 z-10 shadow-sm">
+                            ¡Últimas unidades!
                           </Badge>
                         )}
-                      </div>
-                    </CardContent>
+                        
+                        {producto.imagen_url ? (
+                          <Image
+                            src={producto.imagen_url}
+                            alt={producto.nombre}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                            <Package className="w-16 h-16" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300" />
+                      </CardHeader>
 
-                    <CardFooter className="p-5 pt-0 mt-auto flex items-center justify-between border-t border-border/50 bg-muted/20">
-                      <div className="flex flex-col py-3">
-                        <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Precio</span>
-                        <span className="text-xl font-bold text-foreground">
-                          S/ {producto.precio.toFixed(2)}
-                        </span>
-                      </div>
-                      
-                      <Button
-                        size="icon"
-                        className="h-10 w-10 rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all"
-                        onClick={(e) => handleAddToCart(e, producto)}
-                        title="Añadir al carrito"
-                      >
-                        <ShoppingCart className="w-5 h-5" />
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                      <CardContent className="flex-grow p-5">
+                        <div className="flex justify-between items-start gap-2 mb-2">
+                          <CardTitle className="text-lg font-bold leading-tight line-clamp-1 group-hover:text-orange-600 transition-colors">
+                            {producto.nombre}
+                          </CardTitle>
+                        </div>
+                        
+                        <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
+                          {producto.descripcion || 'Sin descripción disponible para este producto.'}
+                        </p>
+                        
+                        <div className="mt-4 flex items-center gap-2">
+                          <Badge variant="secondary" className="font-normal bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-100">
+                            Stock: {producto.stock}
+                          </Badge>
+                          {producto.marca && (
+                            <Badge variant="outline" className="font-normal text-muted-foreground">
+                              {producto.marca}
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+
+                      <CardFooter className="p-5 pt-0 mt-auto flex items-center justify-between border-t border-border/50 bg-muted/20">
+                        <div className="flex flex-col py-3">
+                          <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Precio</span>
+                          <span className="text-xl font-bold text-foreground">
+                            S/ {producto.precio.toFixed(2)}
+                          </span>
+                        </div>
+                        
+                        <Button
+                          size="icon"
+                          className="h-10 w-10 rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105 transition-all"
+                          onClick={(e) => handleAddToCart(e, producto)}
+                          title="Añadir al carrito"
+                        >
+                          <ShoppingCart className="w-5 h-5" />
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  </Link>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-border/50">
+              <p className="text-sm text-muted-foreground">
+                Mostrando <span className="font-medium text-foreground">{startIndex + 1}</span> a <span className="font-medium text-foreground">{Math.min(endIndex, productosFiltrados.length)}</span> de <span className="font-medium text-foreground">{productosFiltrados.length}</span> productos
+              </p>
+              
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                  title="Primera página"
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  title="Página anterior"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                
+                <span className="text-sm font-medium px-4">
+                  Página {currentPage} de {totalPages}
+                </span>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  title="Siguiente página"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                  title="Última página"
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

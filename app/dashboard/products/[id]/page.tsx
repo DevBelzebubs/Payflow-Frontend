@@ -91,7 +91,7 @@ const ProductDetailPage = () => {
           <StarRating rating={producto.rating_promedio || 0} totalReviews={producto.total_reseñas || 0} />
 
           <p className="text-4xl font-bold text-orange-600 mb-6">
-            ${producto.precio.toFixed(2)}
+            S./{producto.precio.toFixed(2)}
           </p>
 
           <p className="text-muted-foreground text-base leading-relaxed mb-6">
