@@ -138,6 +138,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+        localStorage.removeItem('service_config');
         delete api.defaults.headers.common['Authorization'];
         router.replace('/');
 

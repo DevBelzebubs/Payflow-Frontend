@@ -241,7 +241,7 @@ const ServiceDetailPage = () => {
             )}
 
             <p className="text-4xl font-bold text-orange-600 mb-6 mt-4">
-              ${servicio.recibo.toFixed(2)}
+              S./{servicio.recibo.toFixed(2)}
             </p>
 
             <p className="text-muted-foreground text-base leading-relaxed mb-6">

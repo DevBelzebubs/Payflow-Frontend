@@ -9,20 +9,22 @@ import {
   Loader2, 
   Package, 
   Search, 
-  ShoppingCart, 
+  ShoppingCart,
   Check,
   FilterX,
   ChevronsRight,
   ChevronLeft,
   ChevronRight,
-  ChevronsLeft
+  ChevronsLeft,
+  DollarSign
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from 'next/image';
 import useCart from "@/hooks/cart/useCart";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
+import { Slider } from "@/components/ui/slider";
 
 const Productos = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
@@ -32,13 +34,21 @@ const Productos = () => {
   const { addToCart } = useCart();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
+  const [priceRange,setPriceRange] = useState([0,1000]);
+  const [maxPriceLimit,setMaxPriceLimit] = useState(1000);
 
   useEffect(() => {
     const cargarProductos = async () => {
       try {
         setIsLoading(true);
         const data = await getProductos();
-        setProductos(data.filter(p => p.activo && p.stock > 0));
+        const activos = data.filter(p => p.activo && p.stock > 0);
+        setProductos(activos);
+        if (activos.length > 0) {
+          const max = Math.ceil(Math.max(...activos.map(p => p.precio)));
+          setMaxPriceLimit(max);
+          setPriceRange([0,max]);
+        }
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error inesperado');
@@ -50,14 +60,19 @@ const Productos = () => {
   }, []);
   useEffect(()=>{
     setCurrentPage(1);
-  },[search])
-  const productosFiltrados = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(search.toLowerCase())
-  );
+  },[search,priceRange])
+  const productosFiltrados = useMemo(() => {
+    return productos.filter((p) => {
+      const matchesSearch = p.nombre.toLowerCase().includes(search.toLowerCase());
+      const matchesPrice = p.precio >= priceRange[0] && p.precio <= priceRange[1];
+      return matchesSearch && matchesPrice;
+    });
+  }, [productos, search, priceRange]);
   const totalPages = Math.ceil(productosFiltrados.length/itemsPerPage);
   const startIndex = (currentPage-1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const productosVisibles = productosFiltrados.slice(startIndex,endIndex);
+
   const handlePageChange = (page:number) =>{
     setCurrentPage(page);
     window.scrollTo({top:0, behavior:'smooth'})
@@ -105,24 +120,45 @@ const Productos = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border/50 pb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-border/50 pb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground tracking-tight">Catálogo de Productos</h1>
           <p className="text-muted-foreground mt-1">Explora nuestra selección exclusiva</p>
         </div>
-        
-        <div className="relative w-full md:w-80 group">
-          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
+        <div className="flex flex-col sm:flex-row gap-6 w-full md:w-auto items-end">
+          
+          <div className="w-full sm:w-64 space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground font-medium flex items-center gap-1">
+                <DollarSign className="w-3 h-3" /> Precio
+              </span>
+              <span className="font-bold text-orange-600">
+                S/ {priceRange[0]} - S/ {priceRange[1]}
+              </span>
+            </div>
+            <Slider
+              defaultValue={[0, maxPriceLimit]}
+              value={priceRange}
+              max={maxPriceLimit}
+              step={1}
+              minStepsBetweenThumbs={1}
+              onValueChange={setPriceRange}
+              className="py-2"
+            />
           </div>
-          <input
-            name="search"
-            type="text"
-            placeholder="Buscar productos..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-sm hover:shadow-md"
-          />
+          <div className="relative w-full sm:w-80 group">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
+            </div>
+            <input
+              name="search"
+              type="text"
+              placeholder="Buscar productos..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 bg-background border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-sm hover:shadow-md"
+            />
+          </div>
         </div>
       </div>
 
@@ -133,13 +169,11 @@ const Productos = () => {
           </div>
           <h3 className="text-lg font-semibold text-foreground">No se encontraron productos</h3>
           <p className="text-muted-foreground max-w-xs mx-auto mt-2">
-            Intenta ajustar tu búsqueda o explora otras categorías.
+            Intenta ajustar tu búsqueda o el rango de precios.
           </p>
-          {search && (
-            <Button variant="link" className="text-orange-600 mt-2" onClick={() => setSearch("")}>
-              Limpiar búsqueda
-            </Button>
-          )}
+          <Button variant="link" className="text-orange-600 mt-2" onClick={() => { setSearch(""); setPriceRange([0, maxPriceLimit]); }}>
+            Limpiar filtros
+          </Button>
         </div>
       ) : (
         <>
