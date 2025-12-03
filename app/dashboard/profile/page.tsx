@@ -58,7 +58,7 @@ export default function ProfilePage() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isEditing) {
       setFormData({
         nombre: user.nombre || "",
         telefono: user.telefono || "",
@@ -68,7 +68,7 @@ export default function ProfilePage() {
         setBannerUrl(user.banner_url);
       }
     }
-  }, [user]);
+  }, [user,isEditing]);
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -168,8 +168,9 @@ export default function ProfilePage() {
         email: formData.email,
       };
 
-      await updateUserProfile(updateData);
-
+      const updatedUser = await updateUserProfile(updateData);
+      if (setUser) setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       if (user && user.id && syncUser) {
         await syncUser(user.id);
       }
