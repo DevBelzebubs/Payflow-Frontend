@@ -1,20 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/auth/useAuth';
+import { useApi } from '@/hooks/useApi';
 import { getMisCuentas, getMisOrdenes } from '@/api/services/PaymentService';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { Orders } from '@/interfaces/services/Orders';
 
-// UI Components
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // <--- Usado ahora
-import { Skeleton } from "@/components/ui/skeleton" // <--- Usado ahora
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Icons
 import {
   LayoutGrid,
   Package,
@@ -32,28 +31,22 @@ import HeroCarousel from './components/layout/HeroCarousel';
 
 const Dashboard = () => {
   const { user, cliente } = useAuth();
-  const [totalBalance, setTotalBalance] = useState<number>(0);
-  const [recentOrders, setRecentOrders] = useState<Orders[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!cliente) return;
-      try {
-        const cuentas = await getMisCuentas();
-        const saldo = cuentas.reduce((acc, cuenta) => acc + cuenta.saldo, 0);
-        setTotalBalance(saldo);
 
-        const ordenes = await getMisOrdenes(cliente.id);
-        setRecentOrders(ordenes.slice(0, 3));
-      } catch (error) {
-        console.error("Error cargando datos del dashboard", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: cuentas, loading: loadingCuentas } = useApi<BankAccount[]>(
+    () => getMisCuentas(),
+    [cliente],
+    { enabled: !!cliente, cacheKey: 'dashboard-cuentas' }
+  );
 
-    fetchData();
-  }, [cliente]);
+  const { data: ordenes, loading: loadingOrdenes } = useApi<Orders[]>(
+    () => cliente ? getMisOrdenes(cliente.id) : Promise.resolve([]),
+    [cliente],
+    { enabled: !!cliente, cacheKey: 'dashboard-ordenes' }
+  );
+
+  const totalBalance = cuentas?.reduce((acc, cuenta) => acc + cuenta.saldo, 0) ?? 0;
+  const recentOrders = ordenes?.slice(0, 3) ?? [];
+  const isLoading = loadingCuentas || loadingOrdenes;
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -63,6 +56,7 @@ const Dashboard = () => {
   };
 
   const today = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
   return (
     <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto animate-in fade-in duration-500">
 
@@ -92,7 +86,9 @@ const Dashboard = () => {
           </Button>
         </div>
       </div>
+
       <HeroCarousel />
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-l-4 border-l-orange-500 shadow-md bg-gradient-to-br from-card to-orange-50/50 dark:from-card dark:to-orange-950/10 transition-all hover:translate-y-[-2px]">
           <CardHeader className="pb-2">
@@ -142,6 +138,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
       <div>
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
           <LayoutGrid className="w-5 h-5 text-orange-500" /> Qué quieres hacer hoy?
@@ -193,6 +190,7 @@ const Dashboard = () => {
 
         </div>
       </div>
+
       <Card className="border shadow-sm overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between bg-muted/30 pb-4">
           <div>

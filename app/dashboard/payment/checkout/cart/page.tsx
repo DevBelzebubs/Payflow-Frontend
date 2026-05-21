@@ -26,6 +26,9 @@ const CartCheckoutPage = () => {
   const [error, setError] = useState<string | null>(null);
   
   const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+  const isPayflowWallet = cuenta?.banco?.toLowerCase().includes("monedero payflow") && cuenta?.tipoCuenta === "ahorro";
+  const discountMultiplier = isPayflowWallet ? 0.80 : 1;
+  const totalToPay = totalCart * discountMultiplier;
 
   useEffect(() => {
     if (itemCount === 0 && !success) {
@@ -50,7 +53,7 @@ const CartCheckoutPage = () => {
   const handlePay = async () => {
     if (!cliente) return;
     
-    if (method !== 'MERCADOPAGO' && cuenta && cuenta.saldo < totalCart) {
+    if (method !== 'MERCADOPAGO' && cuenta && cuenta.saldo < totalToPay) {
         return; 
     }
 
@@ -66,7 +69,7 @@ const CartCheckoutPage = () => {
         items: itemsOrden,
         datosPago: {
           origen: method === 'MERCADOPAGO' ? 'MERCADOPAGO' : (cuenta?.origen === 'BCP' ? 'BCP' : 'PAYFLOW'),
-          monto: totalCart,
+          monto: totalToPay,
           cuentaId: cuenta?.id
         },
         notas: `Compra Web: ${itemCount} productos`
@@ -95,7 +98,7 @@ const CartCheckoutPage = () => {
   }
 
   const currentBalance = cuenta?.saldo || 0;
-  const newBalance = currentBalance - totalCart;
+  const newBalance = currentBalance - totalToPay;
   const hasFunds = method === 'MERCADOPAGO' || newBalance >= 0;
 
   if (isLoading) return (
@@ -160,6 +163,13 @@ const CartCheckoutPage = () => {
                 <span className="font-bold text-xl">S/ {totalCart.toFixed(2)}</span>
               </div>
 
+              {isPayflowWallet && (
+                <div className="flex justify-between text-green-600 font-medium p-2 bg-green-50 dark:bg-green-900/10 rounded-md">
+                  <span>Descuento PayFlow (20%)</span>
+                  <span className="font-bold">-S/ {(totalCart * 0.20).toFixed(2)}</span>
+                </div>
+              )}
+
               {method !== 'MERCADOPAGO' && (
                   <>
                     <div className="h-px bg-border my-2"></div>
@@ -197,7 +207,7 @@ const CartCheckoutPage = () => {
             ) : (
               method === 'MERCADOPAGO' 
                 ? `Pagar con Mercado Pago`
-                : `Confirmar Pago S/ ${totalCart.toFixed(2)}`
+                : `Confirmar Pago S/ ${totalToPay.toFixed(2)}`
             )}
           </Button>
         </CardContent>

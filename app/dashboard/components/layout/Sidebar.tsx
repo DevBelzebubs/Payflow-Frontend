@@ -15,7 +15,10 @@ import {
   ShoppingCart,
   X,
   UserRoundPen,
-  Repeat
+  Repeat,
+  Shield,
+  Users,
+  BarChart3
 } from "lucide-react";
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -25,6 +28,10 @@ const navItems = [
   { href: "/dashboard/history", label: "Historial", icon: History },
   { href: "/dashboard/config", label: "Configuración", icon: Settings },
   { href: "/dashboard/profile", label: "Perfil", icon: UserRoundPen },
+];
+
+const adminNavItems = [
+  { href: "/dashboard/admin", label: "Panel Admin", icon: BarChart3 },
 ];
 interface SidebarProps {
   onOpenCart: () => void;
@@ -83,6 +90,37 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           );
         })}
+        {(user?.rol === 'ADMIN' || user?.rol === 'admin') && (
+          <>
+            <div className="pt-4 pb-2 px-4">
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-1 rounded-full bg-gradient-to-b from-orange-500 to-orange-600" />
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Administración
+                </p>
+              </div>
+            </div>
+            {adminNavItems.map((item) => {
+              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium",
+                    isActive
+                      ? "bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
+                      : "text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
+                  )}
+                  onClick={onMobileClose}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </>
+        )}
         <button
           onClick={() => {
             onOpenCart();

@@ -12,11 +12,13 @@ const { isAuthenticated, loading, showWelcomeModal, closeWelcomeModal } = useAut
 const router = useRouter();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push('/');
     }
   }, [loading, isAuthenticated, router]);
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">

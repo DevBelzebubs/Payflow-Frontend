@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { CartProvider } from '@/contexts/CartContext';
 import { ThemeProvider } from 'next-themes';
 import ThemeProviderWrapper from '@/components/providers/ThemeProviderWrapper';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,11 +23,13 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning className=''>
       <body className={inter.className}>
         <ThemeProviderWrapper>
-          <AuthProvider>
-            <CartProvider>
-              {children}
-            </CartProvider>
-          </AuthProvider>
+          <ErrorBoundary>
+            <AuthProvider>
+              <CartProvider>
+                {children}
+              </CartProvider>
+            </AuthProvider>
+          </ErrorBoundary>
         </ThemeProviderWrapper>
       </body>
     </html>
