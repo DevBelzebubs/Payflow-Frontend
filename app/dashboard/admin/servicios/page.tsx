@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useMemo } from 'react';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { AdminService, AdminServicio } from '@/api/services/AdminService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,8 @@ const tipoOptions = [
 ];
 
 const AdminServicios = () => {
+  const { user } = useAuth();
+  const isDemo = user?.rol === 'DEMO';
   const [servicios, setServicios] = useState<AdminServicio[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -154,7 +157,7 @@ const AdminServicios = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setCreateOpen(true)}>
+          <Button disabled={isDemo} onClick={() => setCreateOpen(true)} title={isDemo ? 'No disponible en modo demo' : ''}>
             <Plus className="w-4 h-4 mr-1.5" /> Nuevo Servicio
           </Button>
           <Button variant="outline" size="icon" onClick={fetchServicios}>
@@ -281,7 +284,7 @@ const AdminServicios = () => {
                       )}
                       <Separator />
                       <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" size="sm" onClick={() => {
+                        <Button disabled={isDemo} variant="outline" size="sm" title={isDemo ? 'No disponible en modo demo' : ''} onClick={() => {
                           setEditDialog({
                             open: true, servicio,
                             nombre: servicio.nombre,
@@ -293,10 +296,10 @@ const AdminServicios = () => {
                         }}>
                           <Save className="w-4 h-4 mr-1.5" /> Editar
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleToggleActivo(servicio.idServicio, servicio.activo)}>
+                        <Button disabled={isDemo} variant="outline" size="sm" title={isDemo ? 'No disponible en modo demo' : ''} onClick={() => handleToggleActivo(servicio.idServicio, servicio.activo)}>
                           {servicio.activo ? <><EyeOff className="w-4 h-4 mr-1.5" /> Desactivar</> : <><Eye className="w-4 h-4 mr-1.5" /> Activar</>}
                         </Button>
-                        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive"
+                        <Button disabled={isDemo} variant="outline" size="sm" className="text-destructive hover:text-destructive" title={isDemo ? 'No disponible en modo demo' : ''}
                           onClick={() => handleDelete(servicio.idServicio, servicio.nombre)}>
                           <Trash2 className="w-4 h-4 mr-1.5" /> Eliminar
                         </Button>

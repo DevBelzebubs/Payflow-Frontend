@@ -38,6 +38,7 @@ const nivelConfig: Record<string, { label: string; variant: 'default' | 'seconda
 
 const AdminAdministradores = () => {
   const { user } = useAuth();
+  const isDemo = user?.rol === 'DEMO';
   const [admins, setAdmins] = useState<AdminRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -166,9 +167,11 @@ const AdminAdministradores = () => {
                       </div>
                       {!isSelf && (
                         <Button
+                          disabled={isDemo}
                           variant="ghost"
                           size="sm"
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          title={isDemo ? 'No disponible en modo demo' : ''}
                           onClick={() => setConfirmDialog({ open: true, adminId: admin.id, adminName: admin.usuario?.nombre || '' })}
                         >
                           <Trash2 className="w-4 h-4" />

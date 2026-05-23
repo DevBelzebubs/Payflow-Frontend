@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/auth/useAuth';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { AuthService } from '@/api/services/AuthService';
+import { Eye } from 'lucide-react';
 
 const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
   const [identifier, setIdentifier] = useState(''); 
@@ -188,6 +189,40 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister 
                 className="ml-1 font-medium text-orange-600 hover:underline dark:text-orange-500"
               >
                 Regístrate
+              </button>
+            </div>
+
+            <div className="px-6 pb-6">
+              <div className="relative my-2">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-border"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-card text-muted-foreground">Modo demo</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  setLocalLoading(true);
+                  try {
+                    const response = await AuthService.demoLogin();
+                    if (response && response.token) {
+                      localStorage.setItem('token', response.token);
+                      localStorage.setItem('user', JSON.stringify(response.user));
+                      window.location.href = '/dashboard';
+                    }
+                  } catch (err: any) {
+                    setError(err.message || 'Error al iniciar sesión demo');
+                  } finally {
+                    setLocalLoading(false);
+                  }
+                }}
+                disabled={loading}
+                className="w-full mt-2 rounded-lg border border-dashed border-orange-300 bg-orange-50/50 px-4 py-3 text-sm font-medium text-orange-700 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-orange-300 transition-colors flex items-center justify-center gap-2"
+              >
+                <Eye className="w-4 h-4" />
+                {loading ? 'Iniciando...' : 'Explorar como Demo'}
               </button>
             </div>
           </motion.div>

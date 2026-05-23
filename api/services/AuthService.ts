@@ -83,6 +83,16 @@ const createCliente = async (usuario_id: string): Promise<Cliente> => {
     throw new Error(errorMsg);
   }
 };
+const demoLogin = async (): Promise<AuthResponse> => {
+  try {
+    const response = await api.post<AuthResponse>('/auth/demo-login');
+    return response.data;
+  } catch (error: any) {
+    console.error('Error en demo login:', error.response?.data?.error || error.message);
+    throw new Error(error.response?.data?.error || 'Error al iniciar sesión demo');
+  }
+};
+
 const loginWithBcp = async (dni:string,passwordBcp:string):Promise<AuthResponse> =>{
   try {
     const response = await api.post<AuthResponse>("/auth/login", {
@@ -104,4 +114,5 @@ export const AuthService = {
   register,
   getClienteByUsuarioId,
   createCliente,
+  demoLogin,
 };

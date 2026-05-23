@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useMemo } from 'react';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { AdminService, AdminUser } from '@/api/services/AdminService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,8 @@ const nivelAccesoOptions = [
 const ITEMS_PER_PAGE = 10;
 
 const AdminUsuarios = () => {
+  const { user } = useAuth();
+  const isDemo = user?.rol === 'DEMO';
   const [usuarios, setUsuarios] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -283,8 +286,10 @@ const AdminUsuarios = () => {
 
                       <div className="flex flex-wrap items-center gap-3">
                         <Button
+                          disabled={isDemo}
                           variant={usuario.activo ? 'destructive' : 'default'}
                           size="sm"
+                          title={isDemo ? 'No disponible en modo demo' : ''}
                           onClick={() => {
                             askConfirm(
                               `${usuario.activo ? 'Desactivar' : 'Activar'} usuario`,
@@ -299,11 +304,12 @@ const AdminUsuarios = () => {
                         {usuario.rol !== 'ADMIN' && usuario.rol !== 'admin' ? (
                           <div className="flex items-center gap-2">
                             <Select
+                              disabled={isDemo}
                               onValueChange={(val) => {
-                                handleRolChange(usuario.id, 'ADMIN', val);
+                                if (!isDemo) handleRolChange(usuario.id, 'ADMIN', val);
                               }}
                             >
-                              <SelectTrigger className="h-9 w-44">
+                              <SelectTrigger className="h-9 w-44" title={isDemo ? 'No disponible en modo demo' : ''}>
                                 <Shield className="w-4 h-4 mr-1.5 text-purple-600" />
                                 <SelectValue placeholder="Ascender a Admin" />
                               </SelectTrigger>
@@ -318,8 +324,10 @@ const AdminUsuarios = () => {
                           </div>
                         ) : (
                           <Button
+                            disabled={isDemo}
                             variant="outline"
                             size="sm"
+                            title={isDemo ? 'No disponible en modo demo' : ''}
                             onClick={() => {
                               askConfirm(
                                 'Quitar Administrador',

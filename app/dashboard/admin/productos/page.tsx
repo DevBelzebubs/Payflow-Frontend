@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useMemo } from 'react';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { AdminService, AdminProduct } from '@/api/services/AdminService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,6 +43,8 @@ import {
 const ITEMS_PER_PAGE = 10;
 
 const AdminProductos = () => {
+  const { user } = useAuth();
+  const isDemo = user?.rol === 'DEMO';
   const [productos, setProductos] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -304,8 +307,10 @@ const AdminProductos = () => {
                         <Separator />
                         <div className="flex flex-wrap gap-2">
                           <Button
+                            disabled={isDemo}
                             variant="outline"
                             size="sm"
+                            title={isDemo ? 'No disponible en modo demo' : ''}
                             onClick={() => {
                               setEditDialog({
                                 open: true,
@@ -318,15 +323,19 @@ const AdminProductos = () => {
                             <Edit3 className="w-4 h-4 mr-1.5" /> Editar
                           </Button>
                           <Button
+                            disabled={isDemo}
                             variant="outline"
                             size="sm"
+                            title={isDemo ? 'No disponible en modo demo' : ''}
                             onClick={() => handleToggleActivo(producto.id, producto.activo)}
                           >
                             {producto.activo ? <><EyeOff className="w-4 h-4 mr-1.5" /> Desactivar</> : <><Eye className="w-4 h-4 mr-1.5" /> Activar</>}
                           </Button>
                           <Button
+                            disabled={isDemo}
                             variant="outline"
                             size="sm"
+                            title={isDemo ? 'No disponible en modo demo' : ''}
                             onClick={() => setStockDialog({
                               open: true,
                               productoId: producto.id,
@@ -337,18 +346,14 @@ const AdminProductos = () => {
                             <Box className="w-4 h-4 mr-1.5" /> Ajustar Stock
                           </Button>
                           <Button
+                            disabled={isDemo}
                             variant="outline"
                             size="sm"
                             className="text-destructive hover:text-destructive"
+                            title={isDemo ? 'No disponible en modo demo' : ''}
                             onClick={() => {
                               const prodName = producto.nombre;
                               const prodId = producto.id;
-                              setEditDialog({
-                                open: true,
-                                producto: null,
-                                nombre: '',
-                                precio: 0,
-                              });
                               handleDelete(prodId, prodName);
                             }}
                           >

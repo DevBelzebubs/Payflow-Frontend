@@ -34,12 +34,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const session = getSession();
     if (session) {
+      const loggedUser = session.user as User;
       setToken(session.token);
-      setUser(session.user as User);
+      setUser(loggedUser);
       setAuthHeader(session.token);
       setIsAuthenticated(true);
       setSessionCookie(session.token);
-      syncUser((session.user as User).id);
+      if (loggedUser.rol === 'DEMO') {
+        setCliente({
+          id: 'demo-cliente-0000',
+          usuarioId: 'demo-user-0000',
+          nombre: 'Usuario Demo',
+          correo: 'demo@payflow.com',
+          telefono: '',
+          dni: '00000000',
+          fechaRegistro: new Date().toISOString(),
+        });
+      } else {
+        syncUser(loggedUser.id);
+      }
     }
     setLoading(false);
   }, []);

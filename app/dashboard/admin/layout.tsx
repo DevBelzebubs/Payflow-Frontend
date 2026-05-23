@@ -19,7 +19,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      if (user?.rol === 'ADMIN' || user?.rol === 'admin') {
+      if (user?.rol === 'ADMIN' || user?.rol === 'admin' || user?.rol === 'DEMO') {
         setAuthorized(true);
         setChecking(false);
         return;

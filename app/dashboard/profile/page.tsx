@@ -41,6 +41,7 @@ export default function ProfilePage() {
     "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80";
   
   const { user, logout, syncUser, setUser } = useAuth() as any;
+  const isDemo = user?.rol === 'DEMO';
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -145,7 +146,7 @@ export default function ProfilePage() {
         setBannerUrl(base64Image);
       }
 
-      if (user && user.id && syncUser) {
+      if (!isDemo && user && user.id && syncUser) {
         await syncUser(user.id);
       }
       toast.success("Imagen actualizada", { id: toastId });
@@ -171,7 +172,7 @@ export default function ProfilePage() {
       const updatedUser = await updateUserProfile(updateData);
       if (setUser) setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      if (user && user.id && syncUser) {
+      if (!isDemo && user && user.id && syncUser) {
         await syncUser(user.id);
       }
 
@@ -212,30 +213,32 @@ export default function ProfilePage() {
             disabled={isUploading}
           />
           
-          <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-300">
-            {bannerUrl !== DEFAULT_BANNER && (
+          {!isDemo && (
+            <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover/banner:opacity-100 transition-opacity duration-300">
+              {bannerUrl !== DEFAULT_BANNER && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="shadow-md h-8 px-2"
+                  onClick={() => handleDeleteImage("banner")}
+                  disabled={isUploading}
+                  title="Eliminar banner"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
               <Button
-                variant="destructive"
+                variant="secondary"
                 size="sm"
-                className="shadow-md h-8 px-2"
-                onClick={() => handleDeleteImage("banner")}
+                className="shadow-md h-8 bg-background/80 hover:bg-background backdrop-blur-sm"
+                onClick={() => bannerInputRef.current?.click()}
                 disabled={isUploading}
-                title="Eliminar banner"
               >
-                <Trash2 className="w-4 h-4" />
+                {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Camera className="w-4 h-4 mr-2" />}
+                Cambiar Banner
               </Button>
-            )}
-            <Button
-              variant="secondary"
-              size="sm"
-              className="shadow-md h-8 bg-background/80 hover:bg-background backdrop-blur-sm"
-              onClick={() => bannerInputRef.current?.click()}
-              disabled={isUploading}
-            >
-              {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Camera className="w-4 h-4 mr-2" />}
-              Cambiar Banner
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
 
         <div className="absolute -bottom-16 left-0 right-0 flex flex-col items-center px-4">
@@ -260,30 +263,32 @@ export default function ProfilePage() {
               disabled={isUploading}
             />
             
-            <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 gap-2">
-               <Button
-                size="icon"
-                variant="secondary"
-                className="h-8 w-8 rounded-full bg-white/90 hover:bg-white"
-                onClick={() => avatarInputRef.current?.click()}
-                disabled={isUploading}
-                title="Cambiar foto"
-              >
-                <Camera className="w-4 h-4 text-gray-700" />
-              </Button>
-              {user?.avatar_url && (
+            {!isDemo && (
+              <div className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300 gap-2">
                 <Button
                   size="icon"
-                  variant="destructive"
-                  className="h-8 w-8 rounded-full"
-                  onClick={() => handleDeleteImage("avatar")}
+                  variant="secondary"
+                  className="h-8 w-8 rounded-full bg-white/90 hover:bg-white"
+                  onClick={() => avatarInputRef.current?.click()}
                   disabled={isUploading}
-                  title="Eliminar foto"
+                  title="Cambiar foto"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Camera className="w-4 h-4 text-gray-700" />
                 </Button>
-              )}
-            </div>
+                {user?.avatar_url && (
+                  <Button
+                    size="icon"
+                    variant="destructive"
+                    className="h-8 w-8 rounded-full"
+                    onClick={() => handleDeleteImage("avatar")}
+                    disabled={isUploading}
+                    title="Eliminar foto"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="text-center space-y-2">
@@ -319,16 +324,7 @@ export default function ProfilePage() {
                 Gestiona tus datos de contacto.
               </CardDescription>
             </div>
-            {!isEditing ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsEditing(true)}
-                className="h-8 border-border hover:bg-accent hover:text-accent-foreground"
-              >
-                Editar
-              </Button>
-            ) : (
+            {isEditing ? (
               <div className="flex gap-2">
                 <Button
                   variant="ghost"
@@ -353,7 +349,16 @@ export default function ProfilePage() {
                   Guardar
                 </Button>
               </div>
-            )}
+            ) : !isDemo ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="h-8 border-border hover:bg-accent hover:text-accent-foreground"
+              >
+                Editar
+              </Button>
+            ) : null}
           </CardHeader>
 
           <CardContent className="space-y-6 pt-6">

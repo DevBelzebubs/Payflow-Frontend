@@ -18,7 +18,8 @@ import {
   Repeat,
   Shield,
   Users,
-  BarChart3
+  BarChart3,
+  Eye
 } from "lucide-react";
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -90,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </Link>
           );
         })}
-        {(user?.rol === 'ADMIN' || user?.rol === 'admin') && (
+        {(user?.rol === 'ADMIN' || user?.rol === 'admin' || user?.rol === 'DEMO') && (
           <>
             <div className="pt-4 pb-2 px-4">
               <div className="flex items-center gap-2">
@@ -144,9 +145,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             {user?.nombre.charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">
-              {user?.nombre}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-foreground">
+                {user?.nombre}
+              </p>
+              {user?.rol === 'DEMO' && (
+                <span className="text-[10px] font-semibold text-orange-600 bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                  <Eye className="w-3 h-3" /> DEMO
+                </span>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
         </div>

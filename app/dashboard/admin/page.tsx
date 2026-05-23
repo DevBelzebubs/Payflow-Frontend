@@ -22,9 +22,7 @@ const statCards = [
   { key: 'totalUsuarios', label: 'Usuarios', icon: Users, color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-900/30' },
   { key: 'usuariosActivos', label: 'Activos', icon: UserCheck, color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-900/30' },
   { key: 'totalAdmins', label: 'Admins', icon: Shield, color: 'text-purple-600', bg: 'bg-purple-100 dark:bg-purple-900/30' },
-  { key: 'totalProductos', label: 'Productos', icon: Package, color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-900/30' },
-  { key: 'totalServicios', label: 'Servicios', icon: LayoutGrid, color: 'text-teal-600', bg: 'bg-teal-100 dark:bg-teal-900/30' },
-  { key: 'totalOrdenes', label: 'Órdenes', icon: ShoppingCart, color: 'text-rose-600', bg: 'bg-rose-100 dark:bg-rose-900/30' },
+  { key: 'totalClientes', label: 'Clientes', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-100 dark:bg-indigo-900/30' },
 ];
 
 const CHART_COLORS = ['#f97316', '#3b82f6', '#22c55e', '#a855f7', '#ec4899'];
