@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/auth/useAuth';
 import useCart from '@/hooks/cart/useCart';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
+import { CartItem } from '@/lib/props/auth/Contexts/CartContextType';
 import { cn } from '@/lib/utils';
 import { AlertCircle, ArrowLeft, CheckCircle2, Loader2, ShieldCheck } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -25,7 +26,7 @@ const CartCheckoutPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const totalCart: number = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+  const totalCart: number = cart.reduce((acc: number, item: CartItem) => acc + (item.precio * item.quantity), 0);
   const isPayflowWallet = cuenta?.banco?.toLowerCase().includes("monedero payflow") && cuenta?.tipoCuenta === "ahorro";
   const discountMultiplier = isPayflowWallet ? 0.80 : 1;
   const totalToPay = totalCart * discountMultiplier;

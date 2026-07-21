@@ -44,7 +44,7 @@ const Dashboard = () => {
     { enabled: !!cliente, cacheKey: 'dashboard-ordenes' }
   );
 
-  const totalBalance: number = cuentas?.reduce((acc, cuenta) => acc + cuenta.saldo, 0) ?? 0;
+  const totalBalance: number = cuentas?.reduce((acc: number, cuenta: BankAccount) => acc + cuenta.saldo, 0) ?? 0;
   const recentOrders = ordenes?.slice(0, 3) ?? [];
   const isLoading = loadingCuentas || loadingOrdenes;
 

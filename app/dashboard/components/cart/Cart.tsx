@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CreditCard, Package, ShoppingCart, Trash2, X, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { CartProps } from '@/lib/props/cart/CartProps';
+import { CartItem } from '@/lib/props/auth/Contexts/CartContextType';
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
   const { cart, removeFromCart, clearCart, itemCount } = useCart();
@@ -16,7 +18,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
   };
 
   const total: number = cart.reduce(
-    (acc, item) => acc + item.precio * item.quantity, 0
+    (acc: number, item: CartItem) => acc + item.precio * item.quantity, 0
   );
 
   const overlayVariants = {

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import useCart from '@/hooks/cart/useCart';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
+import { CartItem } from '@/lib/props/auth/Contexts/CartContextType';
 import { cn } from '@/lib/utils';
 import { ArrowRight, Building2, CheckCircle2, CreditCard, Loader2, ShoppingBag, Wallet } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -19,7 +20,7 @@ const CartSelectionPage = () => {
   // Estado para el método de pago
   const [paymentMethod, setPaymentMethod] = useState<'ACCOUNT' | 'MERCADOPAGO' | null>(null);
 
-  const totalCart: number = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+  const totalCart: number = cart.reduce((acc: number, item: CartItem) => acc + (item.precio * item.quantity), 0);
 
   useEffect(() => {
     if (itemCount === 0) {
