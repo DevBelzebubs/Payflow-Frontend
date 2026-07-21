@@ -10,11 +10,11 @@ import { cn } from '@/lib/utils';
 import { AlertCircle, ArrowLeft, CheckCircle2, Loader2, ShieldCheck, Ticket } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { TicketType } from '../../components/layout/TicketTypeSelector';
 import { api } from '@/api/axiosConfig';
 
-const CheckoutPage = () => {
+const CheckoutContent = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { cliente } = useAuth();
@@ -212,4 +212,10 @@ const CheckoutPage = () => {
         </div>
     )
 }
+
+const CheckoutPage = () => (
+    <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader2 className="animate-spin text-orange-500 w-8 h-8" /></div>}>
+        <CheckoutContent />
+    </Suspense>
+);
 export default CheckoutPage;

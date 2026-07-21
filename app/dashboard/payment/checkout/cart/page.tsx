@@ -9,9 +9,9 @@ import { CartItem } from '@/lib/props/auth/Contexts/CartContextType';
 import { cn } from '@/lib/utils';
 import { AlertCircle, ArrowLeft, CheckCircle2, Loader2, ShieldCheck } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
-const CartCheckoutPage = () => {
+const CartCheckoutContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { cliente } = useAuth();
@@ -216,4 +216,10 @@ const CartCheckoutPage = () => {
     </div>
   );
 }
+
+const CartCheckoutPage = () => (
+    <Suspense fallback={<div className="h-96 flex items-center justify-center"><Loader2 className="animate-spin text-orange-500 w-8 h-8" /></div>}>
+        <CartCheckoutContent />
+    </Suspense>
+);
 export default CartCheckoutPage;

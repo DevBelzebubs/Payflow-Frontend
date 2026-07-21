@@ -19,10 +19,10 @@ import {
     Receipt
 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const HistoryPage = () => {
+const HistoryContent = () => {
     const { cliente, loading: authLoading } = useAuth();
     const { clearCart } = useCart();
     const searchParams = useSearchParams();
@@ -245,4 +245,10 @@ const HistoryPage = () => {
         </div>
     );
 }
+
+const HistoryPage = () => (
+    <Suspense fallback={<div className="flex justify-center h-96 items-center"><Loader2 className="animate-spin text-orange-500" /></div>}>
+        <HistoryContent />
+    </Suspense>
+);
 export default HistoryPage;

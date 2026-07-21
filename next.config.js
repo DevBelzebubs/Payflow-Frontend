@@ -1,3 +1,5 @@
+const { initOpenNextCloudflareForDev } = require("@opennextjs/cloudflare");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // output: 'export',
@@ -7,4 +9,5 @@ const nextConfig = {
   images: { unoptimized: true },
 };
 
+initOpenNextCloudflareForDev();
 module.exports = nextConfig;
