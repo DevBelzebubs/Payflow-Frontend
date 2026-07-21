@@ -199,12 +199,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="mt-auto p-4 border-t border-border">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center font-semibold">
-            {user?.nombre.charAt(0).toUpperCase()}
+            {user?.nombre?.charAt(0)?.toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-semibold text-foreground">
-                {user?.nombre}
+                {user?.nombre ?? 'Usuario'}
               </p>
               {user?.rol === 'DEMO' && (
                 <span className="text-[10px] font-semibold text-orange-600 bg-orange-100 dark:bg-orange-900/30 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
@@ -212,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.email ?? ''}</p>
           </div>
         </div>
         <Button

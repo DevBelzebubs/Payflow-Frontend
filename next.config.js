@@ -9,5 +9,7 @@ const nextConfig = {
   images: { unoptimized: true },
 };
 
-initOpenNextCloudflareForDev();
+if (process.argv.includes('dev')) {
+  initOpenNextCloudflareForDev();
+}
 module.exports = nextConfig;
