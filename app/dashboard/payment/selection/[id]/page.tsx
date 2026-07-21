@@ -1,4 +1,5 @@
 'use client';
+export const runtime = 'edge';
 import { getServicioById } from '@/lib/api/services/CatalogService';
 import { getMisCuentas } from '@/lib/api/services/PaymentService';
 import { Button } from '@/components/ui/button';
