@@ -15,9 +15,9 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     router.push('/dashboard/payment/selection/cart');
   };
 
-  const total = cart.reduce<number>((acc, item) => {
-    return acc + item.precio * item.quantity;
-  }, 0);
+  const total: number = cart.reduce(
+    (acc, item) => acc + item.precio * item.quantity, 0
+  );
 
   const overlayVariants = {
     hidden: { opacity: 0 },
