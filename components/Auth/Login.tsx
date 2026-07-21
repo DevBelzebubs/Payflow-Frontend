@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
-import { AuthService } from '@/api/services/AuthService';
+import { AuthService } from '@/lib/api/services/AuthService';
 import { Eye } from 'lucide-react';
 
 const Login: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {

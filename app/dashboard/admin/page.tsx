@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/auth/useAuth';
-import { AdminService, AdminKPIs } from '@/api/services/AdminService';
+import { AdminService, AdminKPIs } from '@/lib/api/services/AdminService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';

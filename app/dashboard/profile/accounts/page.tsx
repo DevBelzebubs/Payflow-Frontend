@@ -1,5 +1,5 @@
 "use client";
-import { getMisCuentas } from "@/api/services/PaymentService";
+import { getMisCuentas } from "@/lib/api/services/PaymentService";
 import { BankAccount } from "@/interfaces/BankAccounts/BankAccount";
 import { cn } from "@/lib/utils";
 import {

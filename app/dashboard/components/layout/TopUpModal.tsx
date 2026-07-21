@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, AlertCircle, Wallet } from 'lucide-react';
-import { recargarMonedero } from '@/api/services/PaymentService';
+import { recargarMonedero } from '@/lib/api/services/PaymentService';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { useRouter } from 'next/navigation';
 

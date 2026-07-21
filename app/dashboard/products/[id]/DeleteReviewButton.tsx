@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { deleteResena } from '@/api/services/ReviewService';
+import { deleteResena } from '@/lib/api/services/ReviewService';
 import { Loader2, Trash2 } from 'lucide-react';
 
 interface DeleteReviewButtonProps {

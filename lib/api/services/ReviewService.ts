@@ -1,4 +1,4 @@
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 
 export interface CreateResenaData {
   calificacion: number;

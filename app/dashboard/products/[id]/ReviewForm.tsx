@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { StarRatingInput } from './StarRatingInput';
-import { createResena, updateResena, CreateResenaData } from '@/api/services/ReviewService';
+import { createResena, updateResena, CreateResenaData } from '@/lib/api/services/ReviewService';
 import { Loader2 } from 'lucide-react';
 
 interface ReviewFormProps {

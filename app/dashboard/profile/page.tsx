@@ -28,7 +28,7 @@ import {
   IdCard,
 } from "lucide-react";
 import { useState, useRef, ChangeEvent, useEffect } from "react";
-import { updateUserProfile } from "@/api/services/UserService";
+import { updateUserProfile } from "@/lib/api/services/UserService";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import ResetPasswordModal from "../components/layout/ResetPasswordModal";

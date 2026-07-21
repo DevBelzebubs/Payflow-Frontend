@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useAuth } from '@/hooks/auth/useAuth';
-import { AdminService, AdminProduct } from '@/api/services/AdminService';
+import { AdminService, AdminProduct } from '@/lib/api/services/AdminService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

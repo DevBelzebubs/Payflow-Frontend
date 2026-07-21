@@ -1,9 +1,10 @@
+export const runtime = 'edge';
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getProductoById } from '@/api/services/CatalogService';
+import { getProductoById } from '@/lib/api/services/CatalogService';
 import { Producto } from '@/interfaces/services/Products';
 import useCart from '@/hooks/cart/useCart';
 import { Button } from '@/components/ui/button';

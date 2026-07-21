@@ -1,5 +1,5 @@
 'use client'
-import { getMisCuentas } from '@/api/services/PaymentService';
+import { getMisCuentas } from '@/lib/api/services/PaymentService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import useCart from '@/hooks/cart/useCart';

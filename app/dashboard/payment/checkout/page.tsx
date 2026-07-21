@@ -1,6 +1,6 @@
 'use client'
-import { getServicioById } from '@/api/services/CatalogService';
-import { getCuentaById, procesarPagoOrden } from '@/api/services/PaymentService';
+import { getServicioById } from '@/lib/api/services/CatalogService';
+import { getCuentaById, procesarPagoOrden } from '@/lib/api/services/PaymentService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/auth/useAuth';
@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect, useState } from 'react'
 import { TicketType } from '../../components/layout/TicketTypeSelector';
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 
 const CheckoutContent = () => {
     const searchParams = useSearchParams();

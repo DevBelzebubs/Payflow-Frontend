@@ -1,5 +1,5 @@
 'use client'
-import { getCuentaById, procesarPagoOrden } from '@/api/services/PaymentService';
+import { getCuentaById, procesarPagoOrden } from '@/lib/api/services/PaymentService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/auth/useAuth';

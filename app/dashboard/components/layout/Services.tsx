@@ -1,5 +1,5 @@
 'use client'
-import { getServicios } from "@/api/services/CatalogService";
+import { getServicios } from "@/lib/api/services/CatalogService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

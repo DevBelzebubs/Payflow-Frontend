@@ -1,6 +1,6 @@
 'use client';
 
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 
 interface SessionData {
   token: string;

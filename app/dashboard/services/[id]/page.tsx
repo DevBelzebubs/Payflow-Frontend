@@ -1,9 +1,10 @@
+export const runtime = 'edge';
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getServicioById } from '@/api/services/CatalogService';
+import { getServicioById } from '@/lib/api/services/CatalogService';
 import { Servicio } from '@/interfaces/services/Service';
 
 
@@ -16,7 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { StarRating } from '../../products/[id]/StarRating';
 import { TicketType } from '../../components/layout/TicketTypeSelector';
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 
 const serviceTypeInfo = {
   'UTILIDAD': {

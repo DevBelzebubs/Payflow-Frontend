@@ -1,5 +1,5 @@
 import { Servicio } from "@/interfaces/services/Service";
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 import { Producto } from "@/interfaces/services/Products";
 
 export const getServicios = async (clienteId:string):Promise<Servicio[]> =>{

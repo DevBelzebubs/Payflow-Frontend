@@ -1,13 +1,14 @@
+export const runtime = 'edge';
 'use client'
-import { getServicioById } from '@/api/services/CatalogService';
-import { getMisCuentas } from '@/api/services/PaymentService';
+import { getServicioById } from '@/lib/api/services/CatalogService';
+import { getMisCuentas } from '@/lib/api/services/PaymentService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { Servicio } from '@/interfaces/services/Service';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Building2, CheckCircle2, CreditCard, Loader2, Ticket, Wallet, Armchair } from 'lucide-react'; // Asegúrate de importar Armchair
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'

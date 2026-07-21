@@ -4,8 +4,8 @@ import { createContext, ReactNode, useCallback, useEffect, useState } from "reac
 import { useRouter } from "next/navigation";
 import { User } from "@/interfaces/User";
 import { Cliente } from "@/interfaces/Cliente";
-import { AuthService } from "@/api/services/AuthService";
-import { updateUserProfile } from "@/api/services/UserService";
+import { AuthService } from "@/lib/api/services/AuthService";
+import { updateUserProfile } from "@/lib/api/services/UserService";
 import { AuthContextType } from "@/lib/props/auth/Contexts/AuthContextType";
 import { useAuthSession } from "@/hooks/auth/useAuthSession";
 

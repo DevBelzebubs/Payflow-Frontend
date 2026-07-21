@@ -1,5 +1,6 @@
+export const runtime = 'edge';
 "use client";
-import { getCuentaById } from "@/api/services/PaymentService";
+import { getCuentaById } from "@/lib/api/services/PaymentService";
 import TopUpModal from "@/app/dashboard/components/layout/TopUpModal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

@@ -1,4 +1,4 @@
-import { api } from "@/api/axiosConfig";
+import { api } from "@/lib/api/axiosConfig";
 import { BankAccount } from "@/interfaces/BankAccounts/BankAccount";
 import { Orders } from "@/interfaces/services/Orders";
 import { Producto } from "@/interfaces/services/Products";

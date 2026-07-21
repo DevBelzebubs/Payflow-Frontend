@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useRouter } from 'next/navigation';
-import { api } from '@/api/axiosConfig';
+import { api } from '@/lib/api/axiosConfig';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const { user, isAuthenticated, loading, setUser } = useAuth();

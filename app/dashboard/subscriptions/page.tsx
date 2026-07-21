@@ -1,5 +1,5 @@
 'use client'
-import { cancelarSuscripcion, getMisSuscripciones } from '@/api/services/SubscriptionService';
+import { cancelarSuscripcion, getMisSuscripciones } from '@/lib/api/services/SubscriptionService';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';

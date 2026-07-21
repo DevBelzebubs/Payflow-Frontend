@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/auth/useAuth';
 import { useApi } from '@/hooks/useApi';
-import { getMisCuentas, getMisOrdenes } from '@/api/services/PaymentService';
+import { getMisCuentas, getMisOrdenes } from '@/lib/api/services/PaymentService';
 import { BankAccount } from '@/interfaces/BankAccounts/BankAccount';
 import { Orders } from '@/interfaces/services/Orders';
 
