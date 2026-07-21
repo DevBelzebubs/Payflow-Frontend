@@ -25,7 +25,7 @@ const CartCheckoutPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+  const totalCart = cart.reduce<number>((acc, item) => acc + (item.precio * item.quantity), 0);
   const isPayflowWallet = cuenta?.banco?.toLowerCase().includes("monedero payflow") && cuenta?.tipoCuenta === "ahorro";
   const discountMultiplier = isPayflowWallet ? 0.80 : 1;
   const totalToPay = totalCart * discountMultiplier;

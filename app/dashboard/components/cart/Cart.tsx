@@ -15,7 +15,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     router.push('/dashboard/payment/selection/cart');
   };
 
-  const total = cart.reduce((acc, item) => {
+  const total = cart.reduce<number>((acc, item) => {
     return acc + item.precio * item.quantity;
   }, 0);
 

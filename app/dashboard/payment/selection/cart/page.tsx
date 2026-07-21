@@ -19,7 +19,7 @@ const CartSelectionPage = () => {
   // Estado para el método de pago
   const [paymentMethod, setPaymentMethod] = useState<'ACCOUNT' | 'MERCADOPAGO' | null>(null);
 
-  const totalCart = cart.reduce((acc, item) => acc + (item.precio * item.quantity), 0);
+  const totalCart = cart.reduce<number>((acc, item) => acc + (item.precio * item.quantity), 0);
 
   useEffect(() => {
     if (itemCount === 0) {
