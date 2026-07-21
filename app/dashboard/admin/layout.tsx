@@ -19,7 +19,12 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      if (user?.rol === 'ADMIN' || user?.rol === 'admin' || user?.rol === 'DEMO') {
+      if (user?.rol === 'DEMO') {
+        router.push('/dashboard');
+        return;
+      }
+
+      if (user?.rol === 'ADMIN' || user?.rol === 'admin') {
         setAuthorized(true);
         setChecking(false);
         return;

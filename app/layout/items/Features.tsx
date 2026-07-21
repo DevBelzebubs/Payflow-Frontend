@@ -2,32 +2,32 @@ import React from 'react'
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
-  CreditCard,
-  Zap,
-  Shield,
-  Globe,
+  Wallet,
+  Star,
+  Film,
+  Building2,
 } from 'lucide-react';
 const Features = ({visibleSections}:StepsProps)=> {
     const features = [
     {
-      icon: Zap,
-      title: 'Pagos Instantáneos',
-      description: 'Procesa transacciones en segundos, no en días',
+      icon: Wallet,
+      title: 'Pago Dual',
+      description: 'PayFlow Wallet con 20% de descuento o paga con MercadoPago — tarjetas, Yape y efectivo',
     },
     {
-      icon: Shield,
-      title: 'Máxima Seguridad',
-      description: 'Encriptación de nivel bancario en todas las transacciones',
+      icon: Star,
+      title: 'Reseñas y Ratings',
+      description: 'Opiniones verificadas de clientes en cada producto y servicio',
     },
     {
-      icon: Globe,
-      title: 'Global',
-      description: 'Acepta pagos de múltiples entornos',
+      icon: Film,
+      title: 'Cine y Eventos',
+      description: 'Selecciona butacas o elige tipo de entrada — VIP, General y más',
     },
     {
-      icon: CreditCard,
-      title: 'Métodos simples y seguros',
-      description: 'Tarjetas y transferencias',
+      icon: Building2,
+      title: 'Cuentas Vinculadas',
+      description: 'Conecta tu cuenta PayFlow o BCP y realiza transferencias directas',
     },
   ];
   return (
@@ -46,8 +46,7 @@ const Features = ({visibleSections}:StepsProps)=> {
               ?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Todas las herramientas que necesitas para realizar pagos de
-              forma profesional
+              Todas las herramientas que necesitas para vender y cobrar
             </p>
           </div>
 

@@ -16,21 +16,21 @@ const Balance = () => {
           >
             <div className="inline-block">
               <span className="bg-primary/10 text-orange-600 px-4 py-2 rounded-full text-sm font-semibold">
-                Nuevo: API v2.0 Disponible
+                Plataforma de Pagos para E-commerce
               </span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-foreground">
-              Pagos{' '}
+              Tu tienda,{' '}
               <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                Fluidos
-              </span>{' '}
-              para ti
+                tus pagos
+              </span>
+              , todo conectado
             </h1>
 
             <p className="text-xl text-muted-foreground leading-relaxed">
-              La plataforma de pagos más rápida y segura. Acepta pagos
-              globales con la mejor experiencia para tus clientes.
+              Gestiona tu catálogo, conecta tus cuentas bancarias y cobra con
+              MercadoPago o tu Monedero PayFlow — todo desde un solo lugar.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">

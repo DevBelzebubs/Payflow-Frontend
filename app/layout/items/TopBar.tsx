@@ -113,13 +113,6 @@ const TopBar: React.FC<TopBarProps> = ({ isScrolled, mobileMenuOpen, setMobileMe
             >
               Cómo Funciona
             </a>
-            <a
-              href="#testimonials"
-              className="block text-muted-foreground hover:text-orange-600 font-medium"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Testimonios
-            </a>
             {isAuthenticated ? (
               <>
                 <Button

@@ -13,10 +13,10 @@ const Sales = () =>{
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            ¿Listo para transformar tus pagos?
+            ¿Listo para vender y cobrar sin complicaciones?
           </h2>
           <p className="text-xl text-orange-50 dark:text-blue-100 mb-8 leading-relaxed">
-            Únete a miles de empresas que ya están usando PayFlow para crecer
+            Crea tu tienda, conecta tus pagos y empieza a crecer con PayFlow.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button

@@ -2,10 +2,10 @@ import React from 'react'
 
 const Stats = () => {
   const stats = [
-    { value: '100K+', label: 'Transacciones' },
-    { value: '2K+', label: 'Usuarios' },
-    { value: '99.9%', label: 'Uptime' },
+    { value: 'Global', label: 'Multi-país' },
     { value: '24/7', label: 'Soporte' },
+    { value: '★', label: 'Creciendo Rápido' },
+    { value: '🔒', label: 'Seguridad Total' },
   ];
   return (
     <section className="py-16 bg-secondary">

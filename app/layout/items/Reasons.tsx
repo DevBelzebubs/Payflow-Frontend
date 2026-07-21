@@ -29,15 +29,15 @@ const Reasons = ({visibleSections}:StepsProps)=> {
             {[
               {
                 step: '01',
-                title: 'Crea tu Cuenta',
+                title: 'Regístrate',
                 description:
-                  'Regístrate en menos de 2 minutos con tu correo electrónico',
+                  'Crea tu cuenta en segundos con tu correo electrónico o DNI',
               },
               {
                 step: '02',
-                title: 'Configura Pagos',
+                title: 'Conecta y Cobra',
                 description:
-                  'Tus métodos de pago se conectan de manera automática y segura',
+                  'Vincula tu cuenta PayFlow o BCP y empieza a vender al instante',
               },
             ].map((item, index) => (
               <div

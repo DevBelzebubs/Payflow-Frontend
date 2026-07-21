@@ -16,10 +16,11 @@ import {
   X,
   UserRoundPen,
   Repeat,
-  Shield,
   Users,
   BarChart3,
-  Eye
+  Eye,
+  ArrowLeft,
+  ShieldCheck,
 } from "lucide-react";
 const navItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -34,6 +35,15 @@ const navItems = [
 const adminNavItems = [
   { href: "/dashboard/admin", label: "Panel Admin", icon: BarChart3 },
 ];
+
+const adminQuickAccessItems = [
+  { href: "/dashboard/admin", label: "Panel Admin", icon: BarChart3 },
+  { href: "/dashboard/admin/usuarios", label: "Usuarios", icon: Users },
+  { href: "/dashboard/admin/productos", label: "Productos", icon: Package },
+  { href: "/dashboard/admin/servicios", label: "Servicios", icon: LayoutGrid },
+  { href: "/dashboard/admin/administradores", label: "Administradores", icon: ShieldCheck },
+];
+
 interface SidebarProps {
   onOpenCart: () => void;
   mobileOpen: boolean;
@@ -50,6 +60,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   const { user, logout } = useAuth();
   const { itemCount } = useCart();
   const pathname = usePathname();
+  const isAdminView = pathname.startsWith("/dashboard/admin");
+  const isAdmin = user?.rol === "ADMIN" || user?.rol === "admin";
+
   const SidebarContent = (
     <div className="flex flex-col h-full">
       <div className="h-20 flex items-center justify-between px-6 border-b border-border flex-shrink-0">
@@ -72,27 +85,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Button>
       </div>
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
+        {isAdminView ? (
+          <>
             <Link
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium",
-                isActive
-                  ? "bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
-                  : "text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
-              )}
+              href="/dashboard"
+              className="flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
               onClick={onMobileClose}
             >
-              <item.icon className="w-5 h-5" />
-              <span>{item.label}</span>
+              <ArrowLeft className="w-5 h-5" />
+              <span>Volver al Dashboard</span>
             </Link>
-          );
-        })}
-        {(user?.rol === 'ADMIN' || user?.rol === 'admin' || user?.rol === 'DEMO') && (
-          <>
             <div className="pt-4 pb-2 px-4">
               <div className="flex items-center gap-2">
                 <div className="h-4 w-1 rounded-full bg-gradient-to-b from-orange-500 to-orange-600" />
@@ -101,8 +103,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </p>
               </div>
             </div>
-            {adminNavItems.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+            {adminQuickAccessItems.map((item) => {
+              const isActive = item.href === "/dashboard/admin"
+                ? pathname === "/dashboard/admin"
+                : pathname.startsWith(item.href);
               return (
                 <Link
                   key={item.label}
@@ -120,6 +124,59 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </Link>
               );
             })}
+          </>
+        ) : (
+          <>
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium",
+                    isActive
+                      ? "bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
+                      : "text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
+                  )}
+                  onClick={onMobileClose}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+            {isAdmin && (
+              <>
+                <div className="pt-4 pb-2 px-4">
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-1 rounded-full bg-gradient-to-b from-orange-500 to-orange-600" />
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      Administración
+                    </p>
+                  </div>
+                </div>
+                {adminNavItems.map((item) => {
+                  const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                  return (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors duration-200 font-medium",
+                        isActive
+                          ? "bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400"
+                          : "text-muted-foreground hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400"
+                      )}
+                      onClick={onMobileClose}
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span>{item.label}</span>
+                    </Link>
+                  );
+                })}
+              </>
+            )}
           </>
         )}
         <button

@@ -8,20 +8,26 @@ import { Producto } from '@/interfaces/services/Products';
 import useCart from '@/hooks/cart/useCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, AlertCircle, ShoppingCart, ArrowLeft, CheckCircle2, MessageCircle } from 'lucide-react';
+import { Loader2, AlertCircle, ShoppingCart, ArrowLeft, CheckCircle2, MessageCircle, PenLine } from 'lucide-react';
 import { ProductGallery } from './ProductGallery';
 import { StarRating } from './StarRating';
 import { QuantitySelector } from './QuantitySelector';
+import { ReviewForm } from './ReviewForm';
+import { DeleteReviewButton } from './DeleteReviewButton';
+import { useAuth } from '@/hooks/auth/useAuth';
 
 const ProductDetailPage = () => {
   const params = useParams();
   const id = params.id as string;
 
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const [producto, setProducto] = useState<Producto | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reviewFormOpen, setReviewFormOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<{ resenaId: string; calificacion: number; titulo: string; comentario: string } | undefined>(undefined);
 
   useEffect(() => {
     if (id) {
@@ -44,6 +50,25 @@ const ProductDetailPage = () => {
   const handleAddToCart = () => {
     if (!producto || quantity === 0) return;
     addToCart(producto, quantity);
+  };
+
+  const reloadProduct = async () => {
+    if (!id) return;
+    try {
+      const data = await getProductoById(id);
+      setProducto(data);
+    } catch {
+    }
+  };
+
+  const handleOpenEditReview = (review: { id: string; calificacion: number; titulo: string; comentario: string }) => {
+    setEditingReview({ resenaId: review.id, calificacion: review.calificacion, titulo: review.titulo, comentario: review.comentario });
+    setReviewFormOpen(true);
+  };
+
+  const handleCloseReviewForm = () => {
+    setReviewFormOpen(false);
+    setEditingReview(undefined);
   };
 
   if (isLoading) {
@@ -137,7 +162,20 @@ const ProductDetailPage = () => {
               </div>
             )}
             <div className="py-6">
-              <h3 className="text-lg font-semibold mb-4">Reseñas de Clientes ({producto.total_reseñas || 0})</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Reseñas de Clientes ({producto.total_reseñas || 0})</h3>
+                {user?.rol !== 'DEMO' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                    onClick={() => { setEditingReview(undefined); setReviewFormOpen(true); }}
+                  >
+                    <PenLine className="w-4 h-4 mr-2" />
+                    Escribir Reseña
+                  </Button>
+                )}
+              </div>
               {(!producto.reseñas || producto.reseñas.length === 0) ? (
                 <div className="text-center text-muted-foreground py-6">
                   <MessageCircle className="w-10 h-10 mx-auto mb-2 text-gray-400" />
@@ -150,9 +188,11 @@ const ProductDetailPage = () => {
                       <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 font-semibold flex items-center justify-center flex-shrink-0">
                         {review.nombre_cliente.charAt(0).toUpperCase()}
                       </div>
-                      <div>
-                        <div className="flex items-center mb-1">
-                          <StarRating rating={review.calificacion} totalReviews={0} showTotal={false} />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center mb-1">
+                            <StarRating rating={review.calificacion} totalReviews={0} showTotal={false} />
+                          </div>
                         </div>
                         <h4 className="font-semibold text-foreground">{review.titulo}</h4>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -168,6 +208,13 @@ const ProductDetailPage = () => {
           </CardContent>
         </Card>
       </div>
+      <ReviewForm
+        isOpen={reviewFormOpen}
+        onClose={handleCloseReviewForm}
+        productoId={id}
+        onReviewSaved={reloadProduct}
+        editData={editingReview}
+      />
     </div>
   );
 };
